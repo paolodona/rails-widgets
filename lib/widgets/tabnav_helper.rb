@@ -10,10 +10,10 @@ module Widgets
       @_binding = proc.binding # the binding of calling page
   
       instance_eval(&proc) 
-      render_default_tabnav_css if @_tabnav.generate_css?  
-      concat(tag('div',@_tabnav.html ,true), @_binding)
-      tabnav_tabs 
-      concat('</div>', @_binding)
+      out @_tabnav.default_css if @_tabnav.generate_css?  
+      out tag('div',@_tabnav.html ,true)
+      render_tabnav_tabs 
+      out '</div>'
       nil
     end 
   
@@ -22,14 +22,14 @@ module Widgets
       raise ArgumentError, "Missing name parameter in start_tabnav call" unless name
       raise ArgumentError, "Missing block in start_tabnav call" unless block_given?
       tabnav(name, opts, &proc) 
-      concat "\n", @_binding
+      out "\n"
       options = {:id => @_tabnav.html[:id] + '_content', :class => @_tabnav.html[:class] + '_content'}
-      concat( tag('div', options, true), @_binding)
+      out tag('div', options, true)
       nil
     end
  
     def end_tabnav
-      concat "</div>", @_binding
+      out '</div>'
       nil
     end
   
@@ -41,29 +41,24 @@ module Widgets
     private 
      
     # renders the tabnav's tabs
-    def tabnav_tabs
-      concat(tag('ul', {} , true), @_binding)
+    def render_tabnav_tabs
+      out tag('ul', {} , true)
     
       @_tabnav.tabs.each do |tab|      
         tab.html[:class] = 'active' if tab.highlighted?(params)
-        tab.html[:title] = tab.title if tab.title
-           
+            
         li_options = tab.html[:id] ? {:id => tab.html[:id] + '_container'} : {} 
-        concat(tag('li', li_options, true), @_binding)
+        out tag('li', li_options, true)
         if tab.link.empty?
-          concat(content_tag('span', tab.name, tab.html), @_binding) 
+          out content_tag('span', tab.name, tab.html) 
         else
-          concat(link_to(tab.name, tab.link, tab.html), @_binding)
+          out link_to(tab.name, tab.link, tab.html)
         end
-        concat "</li> \n", @_binding 
+        out "</li> \n"
       end 
-      concat('</ul>', @_binding)
+      out '</ul>'
     end  
-    
-    # render the inline css
-    def render_default_tabnav_css  
-      concat @_tabnav.default_css, @_binding
-    end
-    
+     
+    def out(string); concat string, @_binding; end
   end
 end
