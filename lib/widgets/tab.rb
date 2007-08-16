@@ -6,13 +6,16 @@ module Widgets
     def initialize(opts={})
       @name = opts[:name] 
       @link = opts[:link] || {}
-      highlights = opts[:highlights] || []
+      
+      # wrap highlights into an array if only one hash has been passed
+      opts[:highlights] = [opts[:highlights]] if opts[:highlights].kind_of?(Hash)
+      self.highlights = opts[:highlights] || []
       @html = opts[:html] || {} 
       @html[:title] = opts[:title] 
      
       yield(self) if block_given?
       
-      highlights << @link if link? # it does highlight on itself
+      self.highlights << @link if link? # it does highlight on itself
       raise ArgumentError, 'you must provide a name' unless @name
     end
     

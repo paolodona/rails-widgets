@@ -31,6 +31,22 @@ class TabTest < Test::Unit::TestCase
     assert tab
     assert_equal 'sample', tab.name
   end
+  
+  def test_initialize_with_highlights_array
+    tab = Tab.new :name=>'test', :highlights => [{:action=>'list'}, {:action => 'index'}]
+    assert_kind_of Array, tab.highlights
+    assert_equal 2, tab.highlights.size
+    assert_kind_of Hash, tab.highlights[0]
+    assert_kind_of Hash, tab.highlights[1]
+  end
+  
+  def test_initialize_with_single_highlight
+    tab = Tab.new :name=>'test', :highlights => {:action=>'list'}
+    assert_kind_of Array, tab.highlights
+    assert_equal 1, tab.highlights.size
+    assert_kind_of Hash, tab.highlights[0]
+  end
+  
     
   def test_presence_of_instance_methods
     EXPECTED_INSTANCE_METHODS.each do |instance_method|
@@ -57,6 +73,11 @@ class TabTest < Test::Unit::TestCase
     
     @dyntab.link= {:controller => @mysurname}  
     assert_equal({:controller => 'Dona'}, @dyntab.link)
+  end
+  
+  def test_highlighted?
+    t = Tab.new :name => 'cats', :highlights => {:controller => 'cats'}
+    assert t.highlighted?({:controller => 'cats'})
   end
 
 end

@@ -33,8 +33,8 @@ module Widgets
        
         highlights.each do |highlight| # for every highlight(proc or hash)
           highlighted = true
-          if highlight.kind_of? String # do not highlight
-            highlighted &= false
+          if highlight.kind_of? String # do not highlight @TODO: should we evaluate the request URI for this?
+            highlighted &= false 
           elsif highlight.kind_of? Proc # evaluate the proc
             h = highlight.call
             if (h.is_a?(TrueClass) || h.is_a?(FalseClass))

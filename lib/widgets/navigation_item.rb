@@ -12,7 +12,7 @@ module Widgets
      
       yield(self) if block_given?
       
-      highlights << @link if link? # it does highlight on itself
+      self.highlights << @link if link? # it does highlight on itself
       raise ArgumentError, 'you must provide a name' unless @name
     end
        
