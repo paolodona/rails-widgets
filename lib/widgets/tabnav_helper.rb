@@ -33,9 +33,9 @@ module Widgets
       nil
     end
   
-    def add_tab options = {}
+    def add_tab options = {}, &block
       raise 'Cannot call add_tab outside of a tabnav or start_tabnav block' unless @_tabnav
-      @_tabnav.tabs << Tab.new(options)
+      @_tabnav.tabs << Tab.new(options, &block)
     end
  
     private 
