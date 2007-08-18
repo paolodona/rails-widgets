@@ -17,8 +17,9 @@ module Widgets
       nil
     end 
     
-    def add_item opts = {}
-      @_navigation.add_item opts
+    def add_item opts = {}, &block
+      raise 'Cannot call add_item outside of a render_navigation block' unless @_navigation
+      @_navigation.items << NavigationItem.new(opts,&block)
       nil
     end
        
