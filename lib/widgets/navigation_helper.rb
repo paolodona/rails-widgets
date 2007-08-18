@@ -1,11 +1,19 @@
 module Widgets
   module NavigationHelper
-    def navigation(opts={}, &proc)
+    
+    def navigation name 
+      html = capture { render :partial => "widgets/#{name}_navigation" }
+      return html
+    end
+    
+    def render_navigation(opts={}, &proc)
       @_navigation = Navigation.new(opts)
       @_binding = proc.binding # the binding of calling page
       instance_eval(&proc) 
       out @_navigation.default_css if @_navigation.generate_css?  
-      render_navigation
+      out tag('div',@_navigation.html ,true)
+      render_navigation_items
+      out '</div>'
       nil
     end 
     
@@ -13,15 +21,7 @@ module Widgets
       @_navigation.add_item opts
       nil
     end
-      
-    private 
-    
-    def render_navigation
-      out tag('div',@_navigation.html ,true)
-      render_navigation_items
-      out '</div>'
-    end
-    
+       
     private 
     
     def render_navigation_items

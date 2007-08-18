@@ -2,18 +2,26 @@ module Widgets
   module TabnavHelper  
     protected 
     
-    # main methods
+    # main method
     
-    # eg: <% start_tabnav :main do %>
+    # show a tabnav defined by a partial
+    #
+    # eg: <% tabnav :main do %>
     #      ...html...
     #     <% end %>
-    def tabnav name
-      render :partial => "gm/widgets/#{name}_tabnav" 
+    # 
+    # or <%= tabnav :main %>
+    def tabnav name, &block
+      html = capture { render :partial => "widgets/#{name}_tabnav" }
       if block_given?
         options = {:id => @_tabnav.html[:id] + '_content', :class => @_tabnav.html[:class] + '_content'}
-        out tag('div', options, true)
-        yield
-        out '</div>'
+        html << tag('div', options, true)
+        html << capture(&block)
+        html << '</div>' 
+        concat( html, block.binding)
+        nil # avoid duplication if called with <%= %>
+      else
+        return html
       end
     end
     
