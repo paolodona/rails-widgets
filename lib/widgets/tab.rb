@@ -23,6 +23,11 @@ module Widgets
     def title; @html[:title]; end
     def title=(new_title); @html[:title]=new_title; end
     
+    # more idiomatic ways to set tab properties
+    def links_to(l); @link = l; end
+    def named(n); @name = n; end
+    def titled(t); @html[:title] = t; end
+    
     def link?
       @link && !@link.empty?
     end

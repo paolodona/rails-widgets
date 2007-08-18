@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 class TabnavHelperTest < Test::Unit::TestCase
   include Widgets
   
+  EXPECTED_INSTANCE_METHODS = %w{tabnav render_start_tabnav render_end_tabnav render_tabnav add_tab}
   def setup
     @view = ActionView::Base.new
     @view.extend ApplicationHelper
@@ -10,7 +11,7 @@ class TabnavHelperTest < Test::Unit::TestCase
   end
     
   def test_presence_of_instance_methods
-    %w{tabnav start_tabnav end_tabnav}.each do |instance_method|
+    EXPECTED_INSTANCE_METHODS.each do |instance_method|
       assert @view.respond_to?(instance_method), "#{instance_method} is not defined in #{@controller.inspect}" 
     end     
   end  

@@ -2,8 +2,27 @@ module Widgets
   module TabnavHelper  
     protected 
     
+    # main methods
+    
+    # eg: <% start_tabnav :main do %>
+    #      ...html...
+    #     <% end %>
+    def tabnav name
+      render :partial => "gm/widgets/#{name}_tabnav" 
+      if block_given?
+        options = {:id => @_tabnav.html[:id] + '_content', :class => @_tabnav.html[:class] + '_content'}
+        out tag('div', options, true)
+        yield
+        out '</div>'
+      end
+    end
+    
+    # tabnav building methods
+    # they are used inside the widgets/*_tabnav.rhtml partials 
+    # (you can also call them in your views if you want)
+    
     # renders the tabnav
-    def tabnav(name, opts={}, &proc)
+    def render_tabnav(name, opts={}, &proc)
       raise ArgumentError, "Missing name parameter in tabnav call" unless name
       raise ArgumentError, "Missing block in tabnav call" unless block_given?
       @_tabnav = Tabnav.new(name, opts)
@@ -13,25 +32,9 @@ module Widgets
       out @_tabnav.default_css if @_tabnav.generate_css?  
       out tag('div',@_tabnav.html ,true)
       render_tabnav_tabs 
-      out '</div>'
+      out "</div>\n"
       nil
     end 
-  
-    # adds the content div
-    def start_tabnav(name, opts={}, &proc)
-      raise ArgumentError, "Missing name parameter in start_tabnav call" unless name
-      raise ArgumentError, "Missing block in start_tabnav call" unless block_given?
-      tabnav(name, opts, &proc) 
-      out "\n"
-      options = {:id => @_tabnav.html[:id] + '_content', :class => @_tabnav.html[:class] + '_content'}
-      out tag('div', options, true)
-      nil
-    end
- 
-    def end_tabnav
-      out '</div>'
-      nil
-    end
   
     def add_tab options = {}, &block
       raise 'Cannot call add_tab outside of a tabnav or start_tabnav block' unless @_tabnav

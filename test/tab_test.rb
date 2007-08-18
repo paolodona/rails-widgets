@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/test_helper'
 class TabTest < Test::Unit::TestCase
   include Widgets
   
-  EXPECTED_INSTANCE_METHODS = %w{highlights link name title html highlighted? highlights_on}
+  EXPECTED_INSTANCE_METHODS = %w{highlights link name title html highlighted? highlights_on links_to named titled}
   
   def setup    
     @myname = 'Paolo'
