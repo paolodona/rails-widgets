@@ -6,8 +6,10 @@ module Widgets
       return html
     end
     
-    def render_navigation(opts={}, &proc)
-      @_navigation = Navigation.new(opts)
+    def render_navigation(name, opts={}, &proc)
+      raise ArgumentError, "Missing name parameter in render_navigation call" unless name
+      raise ArgumentError, "Missing block in render_navigation call" unless block_given?
+      @_navigation = Navigation.new(name, opts)
       @_binding = proc.binding # the binding of calling page
       instance_eval(&proc) 
       out @_navigation.default_css if @_navigation.generate_css?  

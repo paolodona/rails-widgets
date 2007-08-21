@@ -1,30 +1,37 @@
 <style>
-#<%=html[:id]%> {
+.<%=html[:class]%> {
   margin: 0px auto 0px auto;
-  width: 650px;
-  height: 3em;
+  float:right;
 }
 
-#<%=html[:id]%> ul {
-  	float:right;
-	text-align: right;
+.<%=html[:class]%> ul {
+  padding: 0;
+  margin: 0;
+  text-align: right;
 }
 
-#<%=html[:id]%> li {
-  	display:inline;
+.<%=html[:class]%> li {
+  display:inline;
+  padding: 0;
+  margin: 0;
 }
 
-#<%=html[:id]%> a, #<%=html[:id]%> a:visited, #<%=html[:id]%> a:hover {
+.<%=html[:class]%> a, .<%=html[:class]%> a:visited, .<%=html[:class]%> a:hover {
   font-weight: normal;
   color: #000000;
 }
 
-#<%=html[:id]%> a:hover {
+.<%=html[:class]%> a:hover {
   font-weight: normal;
   color: #CB4415;
+  background-color: white;
 }
 
-#<%=html[:id]%> a.active {
+.<%=html[:class]%> a.active {
   font-weight: bold;
+  background-color: white;
+  border: none;
+  padding:0;
+  margin:0;
 }
 </style>

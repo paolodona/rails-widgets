@@ -18,3 +18,7 @@ ActionController::Base.helper Widgets::TabnavHelper
 ##### Code #####
 require 'widgets/code_helper'
 ActionController::Base.helper Widgets::CodeHelper
+
+##### ShowHide #####
+require 'widgets'
+ActionController::Base.helper Widgets::ShowhideHelper
