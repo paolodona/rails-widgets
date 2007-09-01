@@ -14,6 +14,9 @@ require 'widgets/tabnav'
 require 'widgets/tabnav_helper'
 ActionController::Base.helper Widgets::TabnavHelper
 
+##### Table #####
+require 'widgets/table_helper'
+ActionView::Base.send :include, Widgets::TableHelper
 
 ##### Code #####
 require 'widgets/code_helper'
