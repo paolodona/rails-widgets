@@ -68,4 +68,9 @@ class HighlightableTest < Test::Unit::TestCase
     assert !@obj.highlighted?(:controller => 'granny', :action => 'daddy'), 'should NOT highlight'   
   end
   
+  def test_highlighted_with_slash
+    @obj.highlights_on :controller => '/pippo'
+    assert @obj.highlighted?({:controller => 'pippo'})
+  end
+
 end

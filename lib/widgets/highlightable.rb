@@ -45,7 +45,10 @@ module Widgets
           elsif highlight.kind_of? Hash # evaluate the hash
             h = clean_unwanted_keys(highlight)
             h.each_key do |key|   # for each key
-              highlighted &= h[key].to_s==options[key].to_s   
+              # remove first slash from <tt>:controller</tt> key otherwise highlighted? could fail with urls such as {:controller => "/base"</tt>
+              h_key = h[key].dup.to_s
+              h_key.gsub!(/^\//,"") if key == :controller          
+              highlighted &= h_key==options[key].to_s
             end
           else # highlighting rule not supported
             raise 'highlighting rules should be String, Proc or Hash' 

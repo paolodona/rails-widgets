@@ -79,5 +79,5 @@ class TabTest < Test::Unit::TestCase
     t = Tab.new :name => 'cats', :highlights => {:controller => 'cats'}
     assert t.highlighted?({:controller => 'cats'})
   end
-
+  
 end
