@@ -6,7 +6,7 @@ module Widgets
       return html
     end
     
-    def render_navigation(name, opts={}, &proc)
+    def render_navigation(name=:main, opts={}, &proc)
       raise ArgumentError, "Missing name parameter in render_navigation call" unless name
       raise ArgumentError, "Missing block in render_navigation call" unless block_given?
       @_navigation = Navigation.new(name, opts)

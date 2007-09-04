@@ -1,6 +1,6 @@
 <style>
 .<%=html[:class]%> {
-  margin: 0px auto 0px auto;
+  margin: 3px 5px 0px auto;
   float:right;
 }
 
@@ -17,6 +17,9 @@
 }
 
 .<%=html[:class]%> a, .<%=html[:class]%> a:visited, .<%=html[:class]%> a:hover {
+  border: none;
+  padding:0;
+  margin:0;
   font-weight: normal;
   color: #000000;
 }
@@ -24,14 +27,9 @@
 .<%=html[:class]%> a:hover {
   font-weight: normal;
   color: #CB4415;
-  background-color: white;
 }
 
 .<%=html[:class]%> a.active {
   font-weight: bold;
-  background-color: white;
-  border: none;
-  padding:0;
-  margin:0;
 }
 </style>

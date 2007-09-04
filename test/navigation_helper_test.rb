@@ -5,6 +5,7 @@ class NavigationHelperTest < Test::Unit::TestCase
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::CaptureHelper
   include Widgets::NavigationHelper
   
   def setup
@@ -17,32 +18,32 @@ class NavigationHelperTest < Test::Unit::TestCase
     end     
   end    
   
-  def test_empty
+  def test_empty_navigation
     expected = <<-END
-      <div class="navigation" id="navigation"></div>
+      <div class="main_navigation" id="main_navigation"></div>
     END
     
     _erbout = ''
-    navigation do; end# do nothing
+    render_navigation :main do; end # empty navigation
     assert_equal expected.strip, _erbout;
   end
   
-  def test_two_items
+  def test_navigation__with_two_items
     expected = <<-END
-      <div class="navigation" id="navigation"><ul>
-          <li><a href="http://www.seesaw.it">seesaw</a>&nbsp;|&nbsp;</li>
+      <div class="main_navigation" id="main_navigation"><ul>
+          <li><a href="http://www.seesaw.it">seesaw</a>&nbsp;|</li>
           <li><a href="http://blog.seesaw.it">blog</a></li>
         </ul>
       </div>
     END
     
     _erbout = ''
-    navigation do
+    render_navigation do
       add_item :name => 'seesaw', :link => 'http://www.seesaw.it'
       add_item :name => 'blog', :link => 'http://blog.seesaw.it'
     end
     
-    assert_dom_equal expected, _erbout;
+    assert_html expected, _erbout;
   end
   
 end
