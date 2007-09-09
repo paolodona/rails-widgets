@@ -2,6 +2,7 @@
 module Widgets
   
   module TableHelper
+    include CssTemplate
     
     # Returns an HTML table with +items+ disposend in rows. Add
     # HTML attributes by passing an attributes hash to +html_options+.
@@ -19,35 +20,53 @@ module Widgets
     #   <% end -%>
     #    # => <table class="people"><tr><td>login: scooby</td><td>&nbsp;</td></tr></table>
     #
-    def tableize(items, html_options = {}, &block)
+    def tableize(name, items, opts = {}, &block)
+      raise ArgumentError, "Missing name parameter in tableize call" unless name
       raise ArgumentError, "Missing items parameter in tableize call" unless items
       raise ArgumentError, "Missing block in tableize call" unless block_given?
-      columns = html_options[:columns] || 3
+      columns = opts[:cols] || 3
       raise ArgumentError, "Tableize columns must be two or more" unless columns > 1
-      table_options = { :class => html_options[:table_class] } if html_options.has_key?(:table_class)
-      th_options = { :class => html_options[:header_class] } if html_options.has_key?(:header_class)
-      tr_options = { :class => html_options[:row_class] } if html_options.has_key?(:row_class)
-      td_options = { :class => html_options[:data_class] } if html_options.has_key?(:data_class)
-      empty_options = { :class => html_options[:empty_class] } if html_options.has_key?(:empty_class)
       
-      html = tag('table', table_options, true) << tag('tr', tr_options, true)
-      # fill line with items, breaking if needed
+      @name = name || :main
+      @generate_css = opts[:generate_css] || false
+      html = opts[:html] || {} # setup default html options
+      html[:id] ||= @name.to_s.underscore << '_table'
+      html[:class] ||= html[:id]
+      
+      _out = generate_css? ? default_css : ''
+      _out << tag('table', {:id => html[:id], :class => html[:class]}, true) 
+      _out << tag('tr', nil, true)
+      
       index = 0
+      size = items.size
+      # add header
+      if (opts[:header]) 
+        _out << content_tag('th', opts[:header])
+        index += 1
+        size += 1
+      end
+      # fill line with items, breaking if needed
       items.each do |item|
         index += 1
-        html << content_tag('td', capture(item, &block),  td_options)
-        html << '</tr>' << tag('tr', tr_options, true) if index.remainder(columns) == 0 and index != items.size
+        _out << content_tag('td', capture(item, &block))
+        _out << '</tr>' << tag('tr', nil, true) if index.remainder(columns) == 0 and index != size
       end
       # fill remaining columns with empty boxes
-      remaining = items.size.remainder(columns)
-      (columns - remaining).times do
-        html << content_tag('td', '&nbsp;', empty_options) 
+      remaining = size.remainder(columns)
+       (columns - remaining).times do
+        _out << content_tag('td', '&nbsp;', :class => 'blank') 
       end unless remaining == 0
-      html << '</tr>' << '</table>' 
-      concat(html, block.binding)
+      _out << '</tr>' << '</table>' 
+      concat(_out, block.binding)
       nil # avoid duplication if called with <%= %>
     end
     
+    private
+    
+    # return the name of the erb to parse for the default css generation
+    def css_template_filename
+      'table.css.erb' 
+    end
   end
   
 end
