@@ -4,30 +4,32 @@ module Widgets
   module TableHelper
     include CssTemplate
     
-    # Returns an HTML table with +items+ disposend in rows. Add
-    # HTML attributes by passing an attributes hash to +html_options+.
+    # Returns an HTML table with +:collection+ disposend in rows. Add
+    # HTML attributes by passing an attributes hash to +html+.
     # The content of each item is rendere using the given block.
     #
-    # +:columns+ number of columns (default 3)
-    # +:table_class+ css class for table
-    # +:header_class+ css class of each headings
-    # +:row_class+ css class of rows
-    # +:data_class+ css class for non-empty cells
-    # +:empty_class+ css class for all empty cells
+    # +:collection+ array of items
+    # +:cols+ number of columns (default 3)
+    # +:html+ table html attributes (+:class+, +:id+)
+    # +:table_name+ name of table (dafault +:main+)
     #
-    #   <% tableize @users, :table_class => 'people', :columns => 2 do |user| -%>
+    #   <% tableize 'credential', @users, :html => {:class => 'people'}, :cols => 2 do |user| -%>
     #     login: <%= user.name %>
     #   <% end -%>
-    #    # => <table class="people"><tr><td>login: scooby</td><td>&nbsp;</td></tr></table>
     #
-    def tableize(name, items, opts = {}, &block)
-      raise ArgumentError, "Missing name parameter in tableize call" unless name
+    #    # => <table id="credential_table" class="people"><tbody><tr>
+    #           <td>login: scooby</td><td>&nbsp;</td>
+    #         </tr></tbody></table>
+    #
+    def tableize(name, collection, opts = {}, &block)
+      @name = name || opts[:name] || :main
+      raise ArgumentError, "Missing name parameter in tableize call" unless @name
+      items = collection || opts[:collection]
       raise ArgumentError, "Missing items parameter in tableize call" unless items
       raise ArgumentError, "Missing block in tableize call" unless block_given?
       columns = opts[:cols] || 3
       raise ArgumentError, "Tableize columns must be two or more" unless columns > 1
       
-      @name = name || :main
       @generate_css = opts[:generate_css] || false
       html = opts[:html] || {} # setup default html options
       html[:id] ||= @name.to_s.underscore << '_table'
@@ -35,6 +37,7 @@ module Widgets
       
       _out = generate_css? ? default_css : ''
       _out << tag('table', {:id => html[:id], :class => html[:class]}, true) 
+      _out << tag('tbody', nil, true) 
       _out << tag('tr', nil, true)
       
       index = 0
@@ -56,7 +59,7 @@ module Widgets
        (columns - remaining).times do
         _out << content_tag('td', '&nbsp;', :class => 'blank') 
       end unless remaining == 0
-      _out << '</tr>' << '</table>' 
+      _out << '</tr>' << '</tbody>' << '</table>' 
       concat(_out, block.binding)
       nil # avoid duplication if called with <%= %>
     end
