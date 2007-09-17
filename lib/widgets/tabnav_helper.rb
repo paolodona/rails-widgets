@@ -68,11 +68,21 @@ module Widgets
             
         li_options = tab.html[:id] ? {:id => tab.html[:id] + '_container'} : {} 
         out tag('li', li_options, true)
-        if tab.link.empty?
+        if tab.link.empty? && tab.remote_link.nil?
           out content_tag('span', tab.name, tab.html) 
-        else
+        elsif !tab.link.empty?
           out link_to(tab.name, tab.link, tab.html)
-        end
+        elsif tab.remote_link
+          success = "document.getElementsByClassName('active', $('" + @_tabnav.html[:id]+ "')).each(function(item){item.removeClassName('active');});"
+          success += "$('#{tab.html[:id]}').addClassName('active');"
+          # success += "alert(this);"
+          
+          remote_opts = {:update => @_tabnav.html[:id] + '_content',
+                         :success => success}
+          out link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab.html)
+        else
+          raise "WHAT THE HELL?"
+        end 
         out "</li> \n"
       end 
       out '</ul>'

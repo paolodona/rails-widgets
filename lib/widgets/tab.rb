@@ -1,11 +1,12 @@
 module Widgets
   class Tab
     include Highlightable
-    attr_accessor :link, :name, :html
+    attr_accessor :link, :remote_link, :name, :html
     
     def initialize(opts={})
       @name = opts[:name] 
       @link = opts[:link] || {}
+      @remote_link = opts[:remote_link] || nil
       
       # wrap highlights into an array if only one hash has been passed
       opts[:highlights] = [opts[:highlights]] if opts[:highlights].kind_of?(Hash)
@@ -25,12 +26,17 @@ module Widgets
     
     # more idiomatic ways to set tab properties
     def links_to(l); @link = l; end
+    def links_to_remote(rl); 
+      @remote_link = rl; 
+      #remote links MUST have a dom_id
+      #if not given I'll generate a random one
+      @html[:id] ||= "tab_#{rand(99999)}"
+    end
     def named(n); @name = n; end
     def titled(t); @html[:title] = t; end
     
     def link?
       @link && !@link.empty?
     end
-       
   end
 end
