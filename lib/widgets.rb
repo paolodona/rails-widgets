@@ -19,8 +19,9 @@ require 'widgets/table_helper'
 ActionController::Base.helper Widgets::TableHelper
 
 ##### Code #####
-require 'widgets/code_helper'
-ActionController::Base.helper Widgets::CodeHelper
+# not enabled by default because it depends on the Syntax gem
+# require 'widgets/code_helper'
+# ActionController::Base.helper Widgets::CodeHelper
 
 ##### ShowHide #####
 require 'widgets'

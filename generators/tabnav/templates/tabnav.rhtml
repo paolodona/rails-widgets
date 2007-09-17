@@ -31,9 +31,11 @@ render_tabnav :<%=name%>,
   #  t.links_to :controller => 'welcome'
   #end 
   #  
+  # you can use restful routes with:
+  #
   #add_tab do |t|
   #  t.named 'Users'
-  #  t.links_to :controller => 'users'
+  #  t.links_to hash_for_users_path
   #end
   #
   #add_tab do |t|
