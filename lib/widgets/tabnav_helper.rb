@@ -78,7 +78,7 @@ module Widgets
           # success += "alert(this);"
           
           remote_opts = {:update => @_tabnav.html[:id] + '_content',
-                         :success => success}
+                         :success => success, :method => :get }
           out link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab.html)
         else
           raise "WHAT THE HELL?"
