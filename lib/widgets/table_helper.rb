@@ -21,16 +21,15 @@ module Widgets
     #           <td>login: scooby</td><td>&nbsp;</td>
     #         </tr></tbody></table>
     #
-    def tableize(name, collection, opts = {}, &block)
-      @name = name || opts[:name] || :main
-      raise ArgumentError, "Missing name parameter in tableize call" unless @name
-      items = collection || opts[:collection]
-      raise ArgumentError, "Missing items parameter in tableize call" unless items
-      raise ArgumentError, "Missing block in tableize call" unless block_given?
+    def tableize(collection = nil, opts = {}, &block)
+      collection ||= opts[:collection]
+      raise ArgumentError, 'Missing collection parameter in tableize call' unless collection
+      raise ArgumentError, 'Missing block in tableize call' unless block_given?
       columns = opts[:cols] || 3
-      raise ArgumentError, "Tableize columns must be two or more" unless columns > 1
+      raise ArgumentError, 'Tableize columns must be two or more' unless columns > 1
       
       @generate_css = opts[:generate_css] || false
+      @name = opts[:name] || :main
       html = opts[:html] || {} # setup default html options
       html[:id] ||= @name.to_s.underscore << '_table'
       html[:class] ||= html[:id]
@@ -41,7 +40,7 @@ module Widgets
       _out << tag('tr', nil, true)
       
       index = 0
-      size = items.size
+      size = collection.size
       # add header
       if (opts[:header]) 
         _out << content_tag('th', opts[:header])
@@ -49,7 +48,7 @@ module Widgets
         size += 1
       end
       # fill line with items, breaking if needed
-      items.each do |item|
+      collection.each do |item|
         index += 1
         _out << content_tag('td', capture(item, &block))
         _out << '</tr>' << tag('tr', nil, true) if index.remainder(columns) == 0 and index != size
