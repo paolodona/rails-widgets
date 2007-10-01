@@ -82,7 +82,7 @@ module Widgets
             :method => :get,
             :loading => loading_function,
             :loaded => "$('#{@_tabnav.html[:id]}_content').setStyle({height: 'auto'});"
-            }
+          }
           out link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab.html)
         else
           raise "WHAT THE HELL?"
@@ -98,19 +98,20 @@ module Widgets
     # while loading remote tabs
     # NB: EXPERIMENTAL
     def loading_function
+      # show customized partial and adjust content height
+      # todo: find out why I need a 38px offset :-|
       begin
-        # show customized partial and adjust content height
-        # todo: find out why I need a 38px offset :-|
         inner_html = capture {render :partial => 'shared/tabnav_loading' }
-        return <<-JAVASCRIPT
+      rescue
+        inner_html = "Loading..."
+      end
+      return <<-JAVASCRIPT
           var element = $('#{@_tabnav.html[:id]}_content');
           var h = element.getHeight() - 38;
           element.innerHTML='#{escape_javascript(inner_html)}';
-          element.setStyle({height: ''+h+'px'});
-        JAVASCRIPT
-      rescue
-        return "$('#{@_tabnav.html[:id]}_content').innerHTML='Loading...';"
-      end
+          element.setStyle({height: ''+h+'px'});         
+          //element.morph('height:'+h+'px');
+      JAVASCRIPT
     end
   end
 end
