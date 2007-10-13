@@ -1,4 +1,5 @@
 # Widgets
+require 'widgets/core'
 require 'widgets/css_template'
 require 'widgets/highlightable'
 
@@ -24,5 +25,10 @@ ActionController::Base.helper Widgets::TableHelper
 # ActionController::Base.helper Widgets::CodeHelper
 
 ##### ShowHide #####
-require 'widgets'
+require 'widgets/showhide_helper'
 ActionController::Base.helper Widgets::ShowhideHelper
+
+##### Tooltip #####
+require 'widgets/tooltip_helper'
+ActionController::Base.helper Widgets::TooltipHelper
+

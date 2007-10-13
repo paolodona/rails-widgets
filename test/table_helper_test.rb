@@ -19,19 +19,19 @@ class TableizeHelperTest < Test::Unit::TestCase
   
   def test_should_fail_if_wrong_args
     assert_raise(ArgumentError) do
-      @view.tableize nil, nil
+      @view.tableize nil
     end
     assert_raise(ArgumentError) do
-      @view.tableize nil, []
+      @view.tableize []
     end
     assert_raise(ArgumentError) do
-      @view.tableize 'main', nil
+      @view.tableize nil, :name => 'main'
     end
     assert_raise(ArgumentError) do
-      @view.tableize 'main', []
+      @view.tableize [], :name => 'main'
     end
     assert_raise(ArgumentError) do
-      @view.tableize :the_name, [], :cols => 1 do
+      @view.tableize [], :cols => 1, :name => :the_name do
         # nothing
       end
     end
@@ -40,20 +40,20 @@ class TableizeHelperTest < Test::Unit::TestCase
   def test_block_invariance
     _erbout = ''
     assert_nothing_raised do
-      @view.tableize :the_name, ['IS', 'Same!', 'Thing?'] do |i|
+      @view.tableize ['IS', 'Same!', 'Thing?'], :name => :the_name do |i|
         _erbout.concat i
       end
     end
     expected, _erbout = _erbout, ''
     assert_nothing_raised do
-      @view.tableize(:the_name, ['IS', 'Same!', 'Thing?']) { |i| _erbout.concat i }
+      @view.tableize(['IS', 'Same!', 'Thing?'], :name => :the_name) { |i| _erbout.concat i }
     end
     assert_dom_equal expected, _erbout, 'Block vs Proc generation differs'
   end   
   
   def test_empty_layout
     _erbout = ''
-    @view.tableize :empty_layout, [], :cols => 2 do |i|
+    @view.tableize [], :cols => 2, :name => :empty_layout do |i|
       _erbout.concat 'nowhere'
     end
     root = HTML::Document.new(_erbout).root
@@ -67,7 +67,7 @@ class TableizeHelperTest < Test::Unit::TestCase
   
   def test_1_item_layout
     _erbout = ''
-    @view.tableize '1_item_layout', [1] do |i|
+    @view.tableize [1], :name => '1_item_layout' do |i|
       _erbout.concat i.to_s
     end
     root = HTML::Document.new(_erbout).root
@@ -85,7 +85,7 @@ class TableizeHelperTest < Test::Unit::TestCase
   
   def test_row_less_1_item_layout
     _erbout = ''
-    @view.tableize 'row_less_1_item_layout', %w{1 2 3 4 5}, :cols => 6 do |i| 
+    @view.tableize %w{1 2 3 4 5}, :cols => 6, :name => 'row_less_1_item_layout' do |i| 
       _erbout.concat i.to_s
     end
     root = HTML::Document.new(_erbout).root
@@ -100,12 +100,13 @@ class TableizeHelperTest < Test::Unit::TestCase
           assert_select 'td:nth-of-type(5)', '5'
           assert_select 'td.blank:last-of-type', '&nbsp;'
         end
-      end     end
+      end   
+  end
   end  
   
   def test_full_row_layout
     _erbout = ''
-    @view.tableize :full_row_layout, %w{1 2 3 4 5}, :cols => 5 do |i| 
+    @view.tableize %w{1 2 3 4 5}, :cols => 5, :name => :full_row_layout  do |i| 
       _erbout.concat i.to_s
     end
     root = HTML::Document.new(_erbout).root
@@ -125,7 +126,7 @@ class TableizeHelperTest < Test::Unit::TestCase
   
   def test_row_plus_1_item_layout
     _erbout = ''
-    @view.tableize 'row_plus_1_item_layout', %w{1 2 3 4 5}, :cols => 4 do |i| 
+    @view.tableize %w{1 2 3 4 5}, :cols => 4, :name=> 'row_plus_1_item_layout' do |i| 
       _erbout.concat i.to_s
     end
     root = HTML::Document.new(_erbout).root
@@ -150,7 +151,7 @@ class TableizeHelperTest < Test::Unit::TestCase
   
   def test_options
     _erbout = ''
-    @view.tableize nil, nil,
+    @view.tableize nil,
     :name => :options, 
     :collection => %w{1 2 3 4 5}, 
     :generate_css => true,
