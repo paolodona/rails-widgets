@@ -17,6 +17,10 @@ def copy_javascript(file_name)
   copy file_name, plugin_javascripts, app_javascripts 
 end
 
-copy_image 'tooltip_arrow.gif'
-copy_image 'tooltip_image.gif'
-copy_javascript 'tooltip.js'
+begin 
+  copy_image 'tooltip_arrow.gif'
+  copy_image 'tooltip_image.gif'
+  copy_javascript 'tooltip.js'
+rescue Exception => e
+  puts "There are problems copying widgets assets to you app: #{e.message}"
+end
