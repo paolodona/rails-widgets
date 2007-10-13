@@ -13,10 +13,11 @@ end
 
 def copy_javascript(file_name)
   plugin_javascripts = File.join(File.dirname(__FILE__), 'javascript')
-  app_javascripts = File.join(RAILS_ROOT, 'public/javascript/widgets')
+  app_javascripts = File.join(RAILS_ROOT, 'public/javascripts/widgets')
   copy file_name, plugin_javascripts, app_javascripts 
 end
 
+# copy static assets
 begin 
   copy_image 'tooltip_arrow.gif'
   copy_image 'tooltip_image.gif'
