@@ -12,7 +12,7 @@ def copy_image(file_name)
 end
 
 def copy_javascript(file_name)
-  plugin_javascripts = File.join(File.dirname(__FILE__), 'javascript')
+  plugin_javascripts = File.join(File.dirname(__FILE__), 'javascripts')
   app_javascripts = File.join(RAILS_ROOT, 'public/javascripts/widgets')
   copy file_name, plugin_javascripts, app_javascripts 
 end
