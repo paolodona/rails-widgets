@@ -1,7 +1,8 @@
 def copy(file_name, from_dir, to_dir)
+  #puts "creating image " + File.join(to_dir, file_name)
   from = File.expand_path(File.join(from_dir,file_name))
   to = File.expand_path(File.join(to_dir, file_name))
-  puts "copy #{from} to #{to}"  
+  FileUtils.cp from, to, :verbose => true
 end
 
 def copy_image(file_name)
