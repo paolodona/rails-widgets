@@ -24,8 +24,7 @@ module Widgets
       "$('#{id}_tooltip_link').observe('click', function(event){toggleTooltip(event, $('#{id}_tooltip'))});"
     end
  
-    def close_tooltip_link(id, message)
-      message ||= 'close'
+    def close_tooltip_link(id, message = 'close')
       link_to_function message, "$('#{id}_tooltip').hide()"
     end
     
