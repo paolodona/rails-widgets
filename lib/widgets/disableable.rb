@@ -18,6 +18,11 @@ module Widgets
       def disabled_if rule
         self.disabled_condition = rule if rule.kind_of?(Proc)
       end
+      
+      # force the tab as disabled
+      def disable!
+        self.disabled_condition = proc {true}
+      end
    
       # Proc evaluates to true/false
       def disabled?

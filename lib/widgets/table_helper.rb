@@ -4,7 +4,7 @@ module Widgets
   module TableHelper
     include CssTemplate
     
-    # Returns an HTML table with +:collection+ disposend in rows. Add
+    # Returns an HTML table with +:collection+ disposed in rows. Add
     # HTML attributes by passing an attributes hash to +html+.
     # The content of each item is rendere using the given block.
     #

@@ -3,17 +3,41 @@ module Widgets
     include CssTemplate
     
     def tooltip(name=nil, opts={}, &proc)
+      
+      if name.kind_of?(Hash) # called like this: <%= tooltip :name => 'aaa', :partial => 'mytooltip' %>
+        opts = name
+        name = opts[:name]
+      end
+      
       opts[:id] ||= rand(1000)
       name ||= image_tag('widgets/tooltip_image.gif', :border => 0)
-      @_binding = proc.binding
-
-      out default_css unless @_tooltip_css_done
-      @_tooltip_css_done = true
+ 
+      result = ''
+      result << tooltip_css
+      result << tooltip_link(opts[:id],name)
+      result << javascript_tag(tooltip_link_function(opts[:id]))
+      result << render_tooltip(name, tooltip_content(opts,&proc), opts)
       
-      out tooltip_link(opts[:id],name)
-      out javascript_tag(tooltip_link_function(opts[:id]))
-      out render_tooltip(name, capture(&proc), opts)
-      nil
+      if block_given?
+        concat result, proc.binding; 
+        return nil
+      else
+        return result
+      end
+    end
+    
+    def tooltip_css
+      unless @_tooltip_css_done
+        @_tooltip_css_done = true
+        return default_css
+      else
+        ''
+      end
+    end
+    
+    def tooltip_content(opts={}, &proc)
+     return render(:partial => opts[:partial]) if opts[:partial]
+     return capture(&proc)
     end
        
     def tooltip_link(id, name)
