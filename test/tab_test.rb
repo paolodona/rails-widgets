@@ -11,10 +11,15 @@ class TabTest < Test::Unit::TestCase
    
     @tab = Tab.new :name => 'tab', :link => {:controller => 'pippo', :action => 'pluto'}
     @simple_tab = Tab.new :name => 'simple_tab', :link => {:controller =>'pippo'}
+
     @dyntab = Tab.new :name => @myname, 
                       :link => {:controller => 'pippo', :action => @myname},
                       :highlights => [{:controller => @mysurname}]
     
+    @distab = Tab.new :name => 'disabled_tab', 
+                      :link => {:controller => 'pippo'}, 
+                      :disabled_if => proc { 1 == 1 }
+
     @empty = Tab.new :name => 'empty'
   end
      
@@ -78,6 +83,11 @@ class TabTest < Test::Unit::TestCase
   def test_highlighted?
     t = Tab.new :name => 'cats', :highlights => {:controller => 'cats'}
     assert t.highlighted?({:controller => 'cats'})
+  end
+
+  def test_disabled?
+    assert @distab.disabled?
+    assert !@simple_tab.disabled?
   end
   
 end

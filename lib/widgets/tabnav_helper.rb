@@ -64,11 +64,15 @@ module Widgets
       out tag('ul', {} , true)
     
       @_tabnav.tabs.each do |tab|      
-        tab.html[:class] = 'active' if tab.highlighted?(params)
+        if tab.disabled?
+          tab.html[:class] = 'disabled'
+        elsif tab.highlighted?(params)
+          tab.html[:class] = 'active'
+        end
             
         li_options = tab.html[:id] ? {:id => tab.html[:id] + '_container'} : {} 
         out tag('li', li_options, true)
-        if tab.link.empty? && tab.remote_link.nil?
+        if tab.disabled? || (tab.link.empty? && tab.remote_link.nil?)
           out content_tag('span', tab.name, tab.html) 
         elsif !tab.link.empty?
           out link_to(tab.name, tab.link, tab.html)

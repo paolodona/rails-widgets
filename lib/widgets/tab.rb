@@ -1,6 +1,7 @@
 module Widgets
   class Tab
     include Highlightable
+    include Disableable
     attr_accessor :link, :remote_link, :name, :html
     
     def initialize(opts={})
@@ -11,6 +12,7 @@ module Widgets
       # wrap highlights into an array if only one hash has been passed
       opts[:highlights] = [opts[:highlights]] if opts[:highlights].kind_of?(Hash)
       self.highlights = opts[:highlights] || []
+      self.disabled_if opts[:disabled_if]
       @html = opts[:html] || {} 
       @html[:title] = opts[:title] 
      
