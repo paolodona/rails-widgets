@@ -41,21 +41,21 @@ module Widgets
     end
        
     def tooltip_link(id, name)
-      link_to name, '#', :id => "#{id}_tooltip_link"
+      link_to name, 'javascript:void(0)', :id => "tooltip_link_#{id}"
     end
     
     def tooltip_link_function(id)
-      "$('#{id}_tooltip_link').observe('click', function(event){toggleTooltip(event, $('#{id}_tooltip'))});"
+      "$('tooltip_link_#{id}').observe('click', function(event){toggleTooltip(event, $('tooltip_#{id}'))});"
     end
  
     def close_tooltip_link(id, message = 'close')
       message ||= 'close' # if nil is passed I'll force it
-      link_to_function message, "$('#{id}_tooltip').hide()"
+      link_to_function message, "$('tooltip_#{id}').hide()"
     end
     
     def render_tooltip(name, content, opts)
-      html = tag('div', {:id => "#{opts[:id]}_tooltip", :class=>'tooltip', :style => 'display:none'}, true)
-      html << tag('div', {:id => "#{opts[:id]}_tooltip_content", :class=>'tooltip_content'},true)
+      html = tag('div', {:id => "tooltip_#{opts[:id]}", :class=>'tooltip', :style => 'display:none'}, true)
+      html << tag('div', {:id => "tooltip_content_#{opts[:id]}", :class=>'tooltip_content'},true)
       html << content
       html << '<small>' + close_tooltip_link(opts[:id], opts[:close_message]) + '</small>'     
       html << '</div></div>' 
