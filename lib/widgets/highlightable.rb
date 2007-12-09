@@ -17,11 +17,15 @@ module Widgets
       # a rule can be:
       #  * a parameter hash eg: {:controller => 'main', :action => 'welcome'}
       #  * a string containing an URL eg: 'http://blog.seesaw.it'
-      #  * a proc object
       def highlights_on rule
         highlights << rule
       end
-   
+      
+      # force the tab as highlighted
+      def highlight!
+        highlights_on proc { true }
+      end
+     
       # takes in input a Hash (usually params)
       # or a string/Proc that evaluates to true/false
       # it does ignore some params like 'only_path' etc..
@@ -57,8 +61,8 @@ module Widgets
         end
         return result
       end
-
-      private 
+      
+      private  
       
       # removes unwanted keys from a Hash 
       # and returns a new hash
