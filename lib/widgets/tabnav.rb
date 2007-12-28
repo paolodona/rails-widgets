@@ -16,6 +16,11 @@ module Widgets
     def generate_css?
       @generate_css ? true : false
     end
+   
+    # sort your tabs alphabetically
+    def sort!
+      @tabs.sort! { |x,y| x.name <=> y.name  }
+    end
     
   end
 end

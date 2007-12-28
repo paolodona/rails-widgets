@@ -39,6 +39,7 @@ module Widgets
       instance_eval(&proc) 
       out @_tabnav.default_css if @_tabnav.generate_css?  
       out tag('div',@_tabnav.html ,true)
+      @_tabnav.sort! if opts[:sort] == true
       render_tabnav_tabs 
       out "</div>\n"
       nil
