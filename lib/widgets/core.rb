@@ -7,7 +7,9 @@ module ActionView
       # call, the widgets javascripts gets included only once.
       def javascript_include_tag_with_widgets(*sources)
         unless @__widgets_has_already_included_its_js
+          options = sources.last.is_a?(Hash) ? sources.pop : {} # remove options
           sources << 'widgets/tooltip'
+          sources << options # add previously removed option
           @__widgets_has_already_included_its_js = true
         end 
         javascript_include_tag_without_widgets(*sources)
