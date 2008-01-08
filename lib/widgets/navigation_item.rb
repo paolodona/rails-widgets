@@ -1,6 +1,7 @@
 module Widgets
   class NavigationItem
     include Highlightable
+    include Disableable
     
     attr_accessor :name, :link, :html
     

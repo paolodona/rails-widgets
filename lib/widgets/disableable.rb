@@ -16,6 +16,7 @@ module Widgets
       
       # a disable rule should always be a Proc object
       def disabled_if rule
+        raise "you must pass a proc to disabled_if" unless rule.kind_of?(Proc)
         self.disabled_condition = rule if rule.kind_of?(Proc)
       end
       

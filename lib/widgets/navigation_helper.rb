@@ -32,9 +32,18 @@ module Widgets
       
       out "<ul>\n"
       @_navigation.items.each_with_index do |item,index|
-        item.html[:class] = 'active' if item.highlighted?(params)
+        if item.disabled?
+          item.html[:class] = 'disabled'
+        elsif item.highlighted?(params)
+          item.html[:class] = 'active' 
+        end 
+     
         out '<li>' 
-        out link_to(item.name, item.link, item.html)
+        if item.disabled?
+          out content_tag('span', item.name, item.html) 
+        else
+          out link_to(item.name, item.link, item.html)
+        end
         out @_navigation.separator unless index == @_navigation.items.size - 1
         out "</li>\n"
       end
@@ -45,3 +54,4 @@ module Widgets
     
   end
 end
+
