@@ -12,7 +12,7 @@ module Widgets
       # wrap highlights into an array if only one hash has been passed
       opts[:highlights] = [opts[:highlights]] if opts[:highlights].kind_of?(Hash)
       self.highlights = opts[:highlights] || []
-      self.disabled_if opts[:disabled_if]
+      self.disabled_if opts[:disabled_if] || proc { false }
       @html = opts[:html] || {} 
       @html[:title] = opts[:title] 
      
