@@ -1,8 +1,9 @@
 module Widgets
   module NavigationHelper
     
-    def navigation name 
-      html = capture { render :partial => "widgets/#{name}_navigation" }
+    def navigation name, opts={} 
+      partial_template = opts[:partial] || "widgets/#{name}_navigation"
+      html = capture { render :partial => partial_template }
       return html
     end
     

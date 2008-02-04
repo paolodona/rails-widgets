@@ -3,7 +3,6 @@ module Widgets
     include CssTemplate
     
     def tooltip(name=nil, opts={}, &proc)
-      
       if name.kind_of?(Hash) # called like this: <%= tooltip :name => 'aaa', :partial => 'mytooltip' %>
         opts = name
         name = opts[:name]

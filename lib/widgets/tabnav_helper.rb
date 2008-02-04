@@ -11,8 +11,13 @@ module Widgets
     #     <% end %>
     # 
     # or <%= tabnav :main %>
-    def tabnav name, &block
-      html = capture { render :partial => "widgets/#{name}_tabnav" }
+    #
+    # options
+    # ===
+    #   :partial: defaults to widgets/<name>_tabnav
+    def tabnav name, opts={}, &block
+      partial_template = opts[:partial] || "widgets/#{name}_tabnav"
+      html = capture { render :partial => partial_template }
       if block_given?
         options = {:id => @_tabnav.html[:id] + '_content', :class => @_tabnav.html[:class] + '_content'}
         html << tag('div', options, true)
