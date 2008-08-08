@@ -1,0 +1,160 @@
+require File.dirname(__FILE__) + '/test_helper'
+require 'test/unit'
+
+# tableless model
+class Post < ActiveRecord::Base
+  def create_or_update
+    errors.empty?
+  end
+    
+  class << self
+    def columns()
+      @columns ||= []
+    end
+      
+    def column(name, sql_type = nil, default = nil, null = true)
+      columns << ActiveRecord::ConnectionAdapters::Column.new(name.to_s, default, sql_type.to_s, null)
+    end
+  end
+end
+
+class Widgets::ShowhideHelperTest < Test::Unit::TestCase
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::TextHelper
+  include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::CaptureHelper
+  include ActionView::Helpers::RecordIdentificationHelper
+  include Widgets::ShowhideHelper
+  
+  def setup
+    @params = {:html => {:id=>'custom_html_id', :class=>'custom_css_class'}, 
+      :name => 'custom_name',
+      :show_link_id => 'custom_show_link_id',
+      :link_name => 'custom_link_name',
+      :detail_box_id => 'custom_detail_box_id'}
+    @post = Post.new
+  end
+    
+  EXPECTED_INSTANCE_METHODS = %w{show_box_for detail_box_for hide_box_for}
+  
+  def test_presence_of_instance_methods
+    EXPECTED_INSTANCE_METHODS.each do |instance_method|
+      assert respond_to?(instance_method), "#{instance_method} is not defined after including the helper" 
+    end     
+  end    
+  
+  def test_show_box_for_with_defaults
+    expected = "<a class=\"details_show_link\" href=\"#\" id=\"show_details_for_new_post\" onclick=\"$(&quot;details_for_new_post&quot;).show();\n$(&quot;show_details_for_new_post&quot;).hide();; return false;\">show details</a>"
+    assert_equal expected, show_box_for(@post)
+
+    @post[:id]=23
+    expected = "<a class=\"details_show_link\" href=\"#\" id=\"show_details_for_post_23\" onclick=\"$(&quot;details_for_post_23&quot;).show();\n$(&quot;show_details_for_post_23&quot;).hide();; return false;\">show details</a>"
+    assert_equal expected, show_box_for(@post)
+  end
+
+  def test_show_box_for_with_name
+    expected = "<a class=\"happyness_show_link\" href=\"#\" id=\"show_happyness_for_new_post\" onclick=\"$(&quot;happyness_for_new_post&quot;).show();\n$(&quot;show_happyness_for_new_post&quot;).hide();; return false;\">show details</a>"  
+    assert_equal expected, show_box_for(@post, :name=>'happyness')
+
+    @post[:id]=23
+    expected = "<a class=\"happyness_show_link\" href=\"#\" id=\"show_happyness_for_post_23\" onclick=\"$(&quot;happyness_for_post_23&quot;).show();\n$(&quot;show_happyness_for_post_23&quot;).hide();; return false;\">show details</a>"
+    assert_equal expected, show_box_for(@post, :name=>'happyness')
+  end
+  
+  def test_show_box_for_with_full_params
+    expected = "<a class=\"custom_css_class\" href=\"#\" id=\"custom_html_id\" onclick=\"$(&quot;custom_detail_box_id&quot;).show();\n$(&quot;custom_html_id&quot;).hide();; return false;\">custom_link_name</a>"
+    assert_equal expected, show_box_for(@post, @params.merge(:name=>'must_be_overrided'))
+  end
+
+  ## hide
+  
+  def test_hide_box_for_with_defaults
+    expected = "<a class=\"details_hide_link\" href=\"#\" id=\"hide_details_for_new_post\" onclick=\"$(&quot;details_for_new_post&quot;).hide();\n$(&quot;show_details_for_new_post&quot;).show();; return false;\">hide details</a>"
+    assert_equal expected, hide_box_for(@post)
+
+    @post[:id]=54
+    expected = "<a class=\"details_hide_link\" href=\"#\" id=\"hide_details_for_post_54\" onclick=\"$(&quot;details_for_post_54&quot;).hide();\n$(&quot;show_details_for_post_54&quot;).show();; return false;\">hide details</a>"
+    assert_equal expected, hide_box_for(@post)
+  end
+
+  def test_hide_box_for_with_name
+    expected = "<a class=\"fear_hide_link\" href=\"#\" id=\"hide_fear_for_new_post\" onclick=\"$(&quot;fear_for_new_post&quot;).hide();\n$(&quot;show_fear_for_new_post&quot;).show();; return false;\">hide details</a>"
+    assert_equal expected, hide_box_for(@post, :name=>'fear')
+
+    @post[:id]=54
+    expected = "<a class=\"fear_hide_link\" href=\"#\" id=\"hide_fear_for_post_54\" onclick=\"$(&quot;fear_for_post_54&quot;).hide();\n$(&quot;show_fear_for_post_54&quot;).show();; return false;\">hide details</a>"
+    assert_equal expected, hide_box_for(@post, :name=>'fear')
+  end
+  
+  def test_hide_box_for_with_full_params
+    expected = "<a class=\"custom_css_class\" href=\"#\" id=\"custom_html_id\" onclick=\"$(&quot;custom_detail_box_id&quot;).hide();\n$(&quot;custom_show_link_id&quot;).show();; return false;\">custom_link_name</a>"
+    assert_equal expected, hide_box_for(@post, @params.merge(:name=>'must_be_overrided'))
+  end  
+
+  ## detail
+  
+  def test_detail_box_should_raise_argument_error
+    assert_raise(ArgumentError) do
+      detail_box_for @post
+    end
+  end
+    
+  def test_detail_box_css_generation
+    _erbout, expected = '', "<style>\r\n  .details_for_post {\r\n    background: #FFFABF;\r\n    border: solid 1px #cccccc;\r\n    padding: 10px;\r\n    margin-bottom: 5px;\r\n  }\r\n</style>\r\n"+
+      "<div class=\"details_for_post\" id=\"details_for_new_post\" style=\"display:none;\">nice Content</div>"
+    assert_nothing_raised do
+      detail_box_for @post, :generate_css=>true do
+        _erbout.concat 'nice Content'
+      end
+    end
+    assert_equal expected, _erbout
+  end
+  
+  def test_detail_box_with_defaults
+    _erbout, expected = '', "<div class=\"details_for_post\" id=\"details_for_new_post\" style=\"display:none;\">nice Content</div>"
+    assert_nothing_raised do
+      detail_box_for @post do
+        _erbout.concat 'nice Content'
+      end
+    end
+    assert_equal expected, _erbout
+
+    @post[:id]=87
+    _erbout, expected = '', "<div class=\"details_for_post\" id=\"details_for_post_87\" style=\"display:none;\">nice Content</div>"
+    assert_nothing_raised do
+      detail_box_for @post do
+        _erbout.concat 'nice Content'
+      end
+    end
+    assert_equal expected, _erbout
+  end
+
+  def test_detail_box_with_name
+    _erbout, expected = '', "<div class=\"master_for_post\" id=\"master_for_new_post\" style=\"display:none;\">nice Content</div>"
+    assert_nothing_raised do
+      detail_box_for @post, :name=>'master' do
+        _erbout.concat 'nice Content'
+      end
+    end
+    assert_equal expected, _erbout
+
+    @post[:id]=87
+    _erbout, expected = '', "<div class=\"master_for_post\" id=\"master_for_post_87\" style=\"display:none;\">nice Content</div>"
+    assert_nothing_raised do
+      detail_box_for @post, :name=>'master' do
+        _erbout.concat 'nice Content'
+      end
+    end
+    assert_equal expected, _erbout
+  end
+
+  def test_detail_box_with_full_params
+    _erbout, expected = '', "<div class=\"custom_css_class\" id=\"custom_html_id\" style=\"display:none;\">nice Content</div>"
+    assert_nothing_raised do
+      detail_box_for @post, @params.merge(:name=>'must_be_overrided') do
+        _erbout.concat 'nice Content'
+      end
+    end
+    assert_equal expected, _erbout
+  end
+end
