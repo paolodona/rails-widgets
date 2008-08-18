@@ -40,7 +40,7 @@ module Widgets
       
       html = opts[:html] || {} # setup default html options
       html[:id] ||= dom_detail_id(record,name)
-      html[:class] ||= "#{name}_for_#{ActionController::RecordIdentifier.singular_class_name(record)}"
+      html[:class] ||= "#{name}_for_#{normalize_class_name(record)}"
       html[:style] = 'display:none;'
       @css_class = html[:class]
       concat(default_css, block.binding) if generate_css? 
@@ -57,15 +57,31 @@ module Widgets
     end
     
     def dom_detail_id record, name
-      dom_id(record, "#{name}_for#{record.id ? '' : '_new'}")
+      normalize_dom_id(record, name.to_s)
     end
 
     def dom_show_id record, name
-      dom_id(record, "show_#{name}_for#{record.id ? '' : '_new'}")
+      normalize_dom_id(record, "show_#{name}")
     end
 
     def dom_hide_id record, name
-      dom_id(record, "hide_#{name}_for#{record.id ? '' : '_new'}")
+      normalize_dom_id(record, "hide_#{name}")
+    end
+    
+    def normalize_dom_id object, prefix
+      if object.kind_of?(ActiveRecord::Base)
+        dom_id(object, "#{prefix}_for#{object.id ? '' : '_new'}") 
+      else
+        [ prefix, 'for', normalize_class_name(object) ].compact * '_'
+      end
+    end
+
+    def normalize_class_name object
+      if object.kind_of?(ActiveRecord::Base)
+        ActionController::RecordIdentifier.singular_class_name(object)
+      else
+        object.to_s
+      end
     end
     
     # content_tag_for creates an HTML element with id and class parameters

@@ -66,6 +66,11 @@ class Widgets::ShowhideHelperTest < Test::Unit::TestCase
     assert_equal expected, show_box_for(@post, @params.merge(:name=>'must_be_overrided'))
   end
 
+  def test_show_box_if_not_ar
+    expected = "<a class=\"details_show_link\" href=\"#\" id=\"show_details_for_my_wonderful-name\" onclick=\"$(&quot;details_for_my_wonderful-name&quot;).show();\n$(&quot;show_details_for_my_wonderful-name&quot;).hide();; return false;\">show details</a>"
+    assert_equal expected, show_box_for('my_wonderful-name')
+  end
+  
   ## hide
   
   def test_hide_box_for_with_defaults
@@ -91,6 +96,11 @@ class Widgets::ShowhideHelperTest < Test::Unit::TestCase
     assert_equal expected, hide_box_for(@post, @params.merge(:name=>'must_be_overrided'))
   end  
 
+  def test_hide_box_if_non_ar
+    expected = "<a class=\"details_hide_link\" href=\"#\" id=\"hide_details_for_my_wonderful-name\" onclick=\"$(&quot;details_for_my_wonderful-name&quot;).hide();\n$(&quot;show_details_for_my_wonderful-name&quot;).show();; return false;\">hide details</a>"
+    assert_equal expected, hide_box_for('my_wonderful-name')
+  end
+  
   ## detail
   
   def test_detail_box_should_raise_argument_error
@@ -152,6 +162,16 @@ class Widgets::ShowhideHelperTest < Test::Unit::TestCase
     _erbout, expected = '', "<div class=\"custom_css_class\" id=\"custom_html_id\" style=\"display:none;\">nice Content</div>"
     assert_nothing_raised do
       detail_box_for @post, @params.merge(:name=>'must_be_overrided') do
+        _erbout.concat 'nice Content'
+      end
+    end
+    assert_equal expected, _erbout
+  end
+  
+  def test_detail_box_if_not_ar
+    _erbout, expected = '', "<div class=\"details_for_my_wonderful-name\" id=\"details_for_my_wonderful-name\" style=\"display:none;\">nice Content</div>"
+    assert_nothing_raised do
+      detail_box_for 'my_wonderful-name' do
         _erbout.concat 'nice Content'
       end
     end
