@@ -28,7 +28,7 @@ class NavigationHelperTest < Test::Unit::TestCase
     assert_equal expected.strip, _erbout;
   end
   
-  def test_navigation__with_two_items
+  def test_navigation_with_two_items
     expected = <<-END
       <div class="main_navigation" id="main_navigation"><ul>
           <li><a href="http://www.seesaw.it">seesaw</a>&nbsp;|</li>

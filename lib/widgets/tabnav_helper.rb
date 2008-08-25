@@ -67,24 +67,29 @@ module Widgets
      
     # renders the tabnav's tabs
     def render_tabnav_tabs
+      return if @_tabnav.tabs.empty?
+            
       out tag('ul', {} , true)
     
       @_tabnav.tabs.each do |tab|      
         li_options = {}
         li_options[:id] = "#{tab.html[:id]}_container" if tab.html[:id] 
         
+        tab_html = tab.html.dup
+        tab_html[:class] ||= ''
         if tab.disabled?
-          tab.html[:class] = 'disabled'
+          tab_html[:class] << ' disabled'
+          li_options[:class] = "disabled"
         elsif tab.highlighted?(params)
-          tab.html[:class] = 'active'
+          tab_html[:class] << ' active'
           li_options[:class] = "active" 
         end
                 
         out tag('li', li_options, true)
         if tab.disabled? || (tab.link.empty? && tab.remote_link.nil?)
-          out content_tag('span', tab.name, tab.html) 
+          out content_tag('span', tab.name, tab_html) 
         elsif !tab.link.empty?
-          out link_to(tab.name, tab.link, tab.html)
+          out link_to(tab.name, tab.link, tab_html)
         elsif tab.remote_link
           success = "document.getElementsByClassName('active', $('" + @_tabnav.html[:id]+ "')).each(function(item){item.removeClassName('active');});"
           success += "$('#{tab.html[:id]}').addClassName('active');"
@@ -96,11 +101,11 @@ module Widgets
             :loading => loading_function + success,
             :loaded => "$('#{@_tabnav.html[:id]}_content').setStyle({height: 'auto'});"
           }
-          out link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab.html)
+          out link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab_html)
         else
           raise "WHAT THE HELL?"
         end 
-        out "</li> \n"
+        out "</li>\n"
       end 
       out '</ul>'
     end  
