@@ -1,13 +1,12 @@
 require File.dirname(__FILE__) + '/test_helper'
 
 class TabnavHelperTest < Test::Unit::TestCase
-  include Widgets
-  
+    
   EXPECTED_INSTANCE_METHODS = %w{tabnav render_tabnav add_tab}
+  
   def setup
     @view = ActionView::Base.new
-    @view.extend ApplicationHelper
-    @view.extend TabnavHelper
+    @view.extend Widgets::TabnavHelper
   end
     
   def test_presence_of_instance_methods

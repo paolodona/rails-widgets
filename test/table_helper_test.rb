@@ -1,14 +1,12 @@
 require File.dirname(__FILE__) + '/test_helper'
 
 class TableizeHelperTest < Test::Unit::TestCase
-  include Widgets
   
   EXPECTED_INSTANCE_METHODS = %w{tableize}
   
   def setup
     @view = ActionView::Base.new
-    @view.extend ApplicationHelper
-    @view.extend TableHelper
+    @view.extend Widgets::TableHelper
   end
   
   def test_presence_of_instance_methods
