@@ -33,4 +33,7 @@ ActionController::Base.helper Widgets::ShowhideHelper
 require 'widgets/tooltip_helper'
 ActionController::Base.helper Widgets::TooltipHelper
 
+##### Progressbar #####
+require 'widgets/progressbar'
+ActionController::Base.helper Widgets::ProgressbarHelper
 
