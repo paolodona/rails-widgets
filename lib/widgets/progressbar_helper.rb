@@ -20,12 +20,16 @@ module Widgets
       else # Array of values
         total = values.sum
       end 
-      
+
       html = ""
       html << default_css if options[:generate_css] == true
       html << '<div class="progressbar">'          
       values.dup.each_with_index do |value, index|
-        percentage = options[:adjust] ? (value * 100 / total) : value
+        if total == 0
+          percentage = 0
+        else
+          percentage = options[:adjust] ? (value * 100 / total) : value
+        end 
         css_class = "progressbar_color_#{index.modulo(10)}"
         html << "<div style='width: #{percentage}%;' class='#{css_class}'></div>"
       end 
