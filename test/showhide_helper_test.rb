@@ -108,7 +108,7 @@ class Widgets::ShowhideHelperTest < Test::Unit::TestCase
   end
     
   def test_detail_box_css_generation
-    _erbout, expected = '', "<style>\r\n  .details_for_post {\r\n    background: #FFFABF;\r\n    border: solid 1px #cccccc;\r\n    padding: 10px;\r\n    margin-bottom: 5px;\r\n  }\r\n</style>\r\n"+
+    _erbout, expected = '', "<style>\n  .details_for_post {\n    background: #FFFABF;\n    border: solid 1px #cccccc;\n    padding: 10px;\n    margin-bottom: 5px;\n  }\n</style>\n"+
       "<div class=\"details_for_post\" id=\"details_for_new_post\" style=\"display:none;\">nice Content</div>"
     assert_nothing_raised do
       detail_box_for @post, :generate_css=>true do
