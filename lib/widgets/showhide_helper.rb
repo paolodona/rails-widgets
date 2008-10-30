@@ -43,18 +43,13 @@ module Widgets
       html[:class] ||= "#{name}_for_#{normalize_class_name(record)}"
       html[:style] = 'display:none;'
       @css_class = html[:class]
-      concat(default_css, block.binding) if generate_css?
+      concat(render_css('showhide'), block.binding) if generate_css?
       # Taken from ActionView::Helpers::RecordTagHelper
       concat content_tag(:div, capture(&block), html), block.binding
       nil
     end
 
     private
-
-    # return the name of the erb to parse for the default css generation
-    def css_template_filename
-      'showhide.css.erb'
-    end
 
     def dom_detail_id record, name
       normalize_dom_id(record, name.to_s)

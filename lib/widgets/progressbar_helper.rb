@@ -22,7 +22,7 @@ module Widgets
       end 
 
       html = ""
-      html << default_css if options[:generate_css] == true
+      html << render_css('progressbar') if options[:generate_css] == true
       html << '<div class="progressbar">'          
       values.dup.each_with_index do |value, index|
         if total == 0
@@ -34,10 +34,6 @@ module Widgets
         html << "<div style='width: #{percentage}%;' class='#{css_class}'></div>"
       end 
       html << "</div>" 
-    end
-    
-    def css_template_filename
-      'progressbar.css.erb' 
     end
   end
 end

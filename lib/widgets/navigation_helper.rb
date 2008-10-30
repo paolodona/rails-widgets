@@ -13,7 +13,7 @@ module Widgets
       @_navigation = Navigation.new(name, opts)
       @_binding = proc.binding # the binding of calling page
       instance_eval(&proc)
-      out @_navigation.default_css if @_navigation.generate_css?
+      out @_navigation.render_css('navigation') if @_navigation.generate_css?
       out tag('div',@_navigation.html ,true)
       render_navigation_items
       out '</div>'

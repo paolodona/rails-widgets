@@ -42,7 +42,7 @@ module Widgets
       @_binding = proc.binding # the binding of calling page
 
       instance_eval(&proc)
-      out @_tabnav.default_css if @_tabnav.generate_css?
+      out @_tabnav.render_css('tabnav') if @_tabnav.generate_css?
       out tag('div',@_tabnav.html ,true)
       @_tabnav.sort! if opts[:sort] == true
       render_tabnav_tabs

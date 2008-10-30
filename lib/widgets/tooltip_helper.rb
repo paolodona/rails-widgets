@@ -28,7 +28,7 @@ module Widgets
     def tooltip_css
       unless @_tooltip_css_done
         @_tooltip_css_done = true
-        return default_css
+        return render_css('tooltip')
       else
         ''
       end
@@ -60,13 +60,5 @@ module Widgets
       html << '</div></div>' 
       html
     end
-    
-    private
-    
-    # return the name of the erb to parse for the default css generation
-    def css_template_filename
-      'tooltip.css.erb' 
-    end
-    
   end
 end

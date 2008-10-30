@@ -34,7 +34,7 @@ module Widgets
       html[:id] ||= @name.to_s.underscore << '_table'
       html[:class] ||= html[:id]
       
-      _out = generate_css? ? default_css : ''
+      _out = generate_css? ? render_css('table') : ''
       _out << tag('table', {:id => html[:id], :class => html[:class]}, true) 
       _out << tag('tbody', nil, true) 
       _out << tag('tr', nil, true)
@@ -63,12 +63,6 @@ module Widgets
       nil # avoid duplication if called with <%= %>
     end
     
-    private
-    
-    # return the name of the erb to parse for the default css generation
-    def css_template_filename
-      'table.css.erb' 
-    end
   end
   
 end

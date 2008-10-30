@@ -7,13 +7,23 @@
 #   :html => aHash #=> sets html options for the tabnav's div (es :html => {:class=> 'myCssClass', :id=>'myCssId'}) 
 #  
 render_navigation :<%=name%>, :generate_css => true do 
-    add_item :name => 'home', 
-             :link => {:controller => 'main'}
-    add_item :name => 'www.seesaw.it', 
-             :link => 'http://www.seesaw.it'
-    add_item :name => 'blog.seesaw.it', 
-             :link => 'http://blog.seesaw.it' 
+    add_item do |i|
+      i.named 'welcome to the rails-widgets'
+      i.disable!
+    end
+    
+    add_item do |i|
+      # i.html = {:id => 'logout_link'}
+      i.named 'github' 
+      i.links_to "http://github.com/paolodona/rails-widgets"
+    end
 
+    add_item do |i|
+      i.named 'wiki' 
+      i.titled 'contribute to the wiki!'
+      i.links_to "http://github.com/paolodona/rails-widgets/wiki"
+    end
+    
     # you can pass add_item a block to just like the tabnav!
     #  
     # add_item do |i|
