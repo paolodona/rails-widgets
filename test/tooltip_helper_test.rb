@@ -19,18 +19,18 @@ class TooltipHelperTest < Test::Unit::TestCase
   end    
   
   def test_tooltip_link_function
-    expected = "$('one_tooltip_link').observe('click', function(event){toggleTooltip(event, $('one_tooltip'))});"   
+    expected = "$('tooltip_link_one').observe('click', function(event){toggleTooltip(event, $('tooltip_one'))});"   
     assert_equal expected.strip, tooltip_link_function(:one);
   
-    expected = "$('two_tooltip_link').observe('click', function(event){toggleTooltip(event, $('two_tooltip'))});"   
+    expected = "$('tooltip_link_two').observe('click', function(event){toggleTooltip(event, $('tooltip_two'))});"   
     assert_equal expected.strip, tooltip_link_function(:two);
   end
   
   def test_close_tooltip_link
-    expected = "<a href=\"#\" onclick=\"$('first_tooltip').hide(); return false;\">close</a>"   
+    expected = "<a href=\"#\" onclick=\"$('tooltip_first').hide(); return false;\">close</a>"   
     assert_equal expected.strip, close_tooltip_link(:first);
     
-    expected = "<a href=\"#\" onclick=\"$('second_tooltip').hide(); return false;\">chiudi</a>"   
+    expected = "<a href=\"#\" onclick=\"$('tooltip_second').hide(); return false;\">chiudi</a>"   
     assert_equal expected.strip, close_tooltip_link(:second, 'chiudi');
   end
  

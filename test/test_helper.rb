@@ -1,8 +1,12 @@
-RAILS_ENV = 'test'
-require File.expand_path(File.join(File.dirname(__FILE__), '../../../../config/environment.rb'))
+$:.unshift(File.dirname(__FILE__) + '/../..')
+$:.unshift(File.dirname(__FILE__) + '/../../lib')
+
+require 'rubygems'
+require 'test/unit'
+require 'active_record'
+require 'action_controller'
 require 'action_controller/test_process'
-require 'breakpoint'
-require 'widgets'
+require 'init'
 
 def assert_html expected, actual
     expected = clean_html(expected)

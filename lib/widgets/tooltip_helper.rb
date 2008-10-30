@@ -61,6 +61,8 @@ module Widgets
       html
     end
     
+    private
+    
     # return the name of the erb to parse for the default css generation
     def css_template_filename
       'tooltip.css.erb' 
