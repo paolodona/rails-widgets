@@ -8,6 +8,9 @@ require 'action_controller'
 require 'action_controller/test_process'
 require 'init'
 
+# gem install redgreen for colored test output
+begin require 'redgreen'; rescue LoadError; end
+
 def assert_html expected, actual
     expected = clean_html(expected)
     actual = clean_html(actual)
