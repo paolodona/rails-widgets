@@ -14,7 +14,7 @@ class NavigationGenerator < Rails::Generator::Base
     record do |m|
       if @name 
         m.directory File.join('app/views/widgets')
-        m.template 'navigation.rhtml', File.join('app/views/widgets', "_#{@name}_navigation.rhtml")
+        m.template 'navigation.html.erb', File.join('app/views/widgets', "_#{@name}_navigation.html.erb")
       end
     end
   end

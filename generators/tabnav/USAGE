@@ -4,8 +4,8 @@ invoke with:  ./script/generate tabnav <name>
          es:  ./script/generate tabnav main
 
 Usage:
-    Customize your generated partial (es: views/widgets/_main_tabnav.rhtml)
-    then insert in your .rhtml pages one of these snippets:
+    Customize your generated partial (es: views/widgets/_main_tabnav.html.erb)
+    then insert in your .html.erb pages one of these snippets:
 
     <% tabnav :main do %>
        your html here

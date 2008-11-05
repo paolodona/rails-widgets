@@ -14,7 +14,7 @@ class TabnavGenerator < Rails::Generator::Base
     record do |m|
       if @name 
         m.directory File.join('app/views/widgets')
-        m.template 'tabnav.rhtml', File.join('app/views/widgets', "_#{@name}_tabnav.rhtml")
+        m.template 'tabnav.html.erb', File.join('app/views/widgets', "_#{@name}_tabnav.html.erb")
       end
     end
   end
