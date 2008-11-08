@@ -6,14 +6,14 @@ module Widgets
     
     # Returns an HTML table with +:collection+ disposed in rows. Add
     # HTML attributes by passing an attributes hash to +html+.
-    # The content of each item is rendere using the given block.
+    # The content of each item is rendered using the given block.
     #
     # +:collection+ array of items
     # +:cols+ number of columns (default 3)
     # +:html+ table html attributes (+:class+, +:id+)
-    # +:table_name+ name of table (dafault +:main+)
+    # +:name+ name of table (dafault +:main+)
     #
-    #   <% tableize 'credential', @users, :html => {:class => 'people'}, :cols => 2 do |user| -%>
+    #   <% tableize @users, :name => 'credential', :html => {:class => 'people'}, :cols => 2 do |user| -%>
     #     login: <%= user.name %>
     #   <% end -%>
     #
@@ -41,6 +41,7 @@ module Widgets
       
       index = 0
       size = collection.size
+      empty_cell = content_tag('td', '&nbsp;', :class => 'blank')
       # add header
       if (opts[:header]) 
         _out << content_tag('th', opts[:header])
@@ -51,12 +52,19 @@ module Widgets
       collection.each do |item|
         index += 1
         _out << content_tag('td', capture(item, &block))
-        _out << '</tr>' << tag('tr', nil, true) if index.remainder(columns) == 0 and index != size
+        should_wrap =  index.remainder(columns) == 0 and index != size
+        _out << '</tr>' << tag('tr', nil, true) if should_wrap 
+        
+        # prepend every line with an empty cell
+        if should_wrap && opts[:skip_header_column] == true
+          _out << empty_cell 
+          index += 1; size += 1
+        end
       end
       # fill remaining columns with empty boxes
       remaining = size.remainder(columns)
        (columns - remaining).times do
-        _out << content_tag('td', '&nbsp;', :class => 'blank') 
+        _out << empty_cell
       end unless remaining == 0
       _out << '</tr>' << '</tbody>' << '</table>' 
       concat(_out, block.binding)
