@@ -3,7 +3,7 @@ module Widgets
     # es: <%= code 'models/post.rb' %>
     def code file_path, opts = {}
       html = ''
-      if opts[:generate_css] == true
+      if (opts.has_key?[:generate_css] && opts[:generate_css] != false) || opts[:generate_css] == true
         css_template = ERB.new IO.read(File.expand_path(File.dirname(__FILE__) + '/code.css.erb'))
         html << css_template.result(binding)
       end
