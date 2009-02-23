@@ -12,7 +12,8 @@ module Widgets
       @_widgets_css_templates[name] = css_template.result(binding)
     end 
     
-    def render_template(name, _binding = nil)
+    # WD-rpw 02-22-2009 changed name to not conflict with ruby/gems/1.8/gems/actionpack-1.13.3/lib/action_view/base.rb's render_template method
+    def rw_render_template(name, _binding = nil)
       _template_filename = "#{name}.html.erb" 
       _template = ERB.new IO.read(File.join(File.dirname(__FILE__), _template_filename))
       _template.result(binding)

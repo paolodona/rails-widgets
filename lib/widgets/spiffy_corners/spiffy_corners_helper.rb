@@ -10,7 +10,7 @@ module Widgets
         html = []
         html << render_css('spiffy_corners/spiffy_corners') if opts[:generate_css] == true
         @_spiffy_corners_content = capture(&block) 
-        html << render_template('spiffy_corners/spiffy5', binding)
+        html << rw_render_template('spiffy_corners/spiffy5', binding)
        
         concat(html.join, block.binding)
         return nil
