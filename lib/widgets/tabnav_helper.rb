@@ -23,7 +23,7 @@ module Widgets
         html << tag('div', options, true)
         html << capture(&block)
         html << '</div>'
-        concat( html, block.binding)
+        concat html
         nil # avoid duplication if called with <%= %>
       else
         return html
@@ -39,14 +39,13 @@ module Widgets
       raise ArgumentError, "Missing name parameter in tabnav call" unless name
       raise ArgumentError, "Missing block in tabnav call" unless block_given?
       @_tabnav = Tabnav.new(name, opts)
-      @_binding = proc.binding # the binding of calling page
 
       instance_eval(&proc)
-      out @_tabnav.render_css('tabnav') if @_tabnav.generate_css?
-      out tag('div',@_tabnav.html ,true)
+      concat @_tabnav.render_css('tabnav') if @_tabnav.generate_css?
+      concat tag('div',@_tabnav.html ,true)
       @_tabnav.sort! if opts[:sort] == true
       render_tabnav_tabs
-      out "</div>\n"
+      concat "</div>\n"
       nil
     end
 
@@ -69,7 +68,7 @@ module Widgets
     def render_tabnav_tabs
       return if @_tabnav.tabs.empty?
 
-      out tag('ul', {} , true)
+      concat tag('ul', {} , true)
 
       @_tabnav.tabs.each do |tab|
         li_options = {}
@@ -84,11 +83,11 @@ module Widgets
         end
         li_options[:class] = tab_html[:class]
 
-        out tag('li', li_options, true)
+        concat tag('li', li_options, true)
         if tab.disabled? || (tab.link.empty? && tab.remote_link.nil?)
-          out content_tag('span', tab.name, tab_html)
+          concat content_tag('span', tab.name, tab_html)
         elsif !tab.link.empty?
-          out link_to(tab.name, tab.link, tab_html)
+          concat link_to(tab.name, tab.link, tab_html)
         elsif tab.remote_link
           success = "document.getElementsByClassName('active', $('" + @_tabnav.html[:id]+ "')).each(function(item){item.removeClassName('active');});"
           success += "$('#{tab.html[:id]}').addClassName('active');"
@@ -100,16 +99,14 @@ module Widgets
             :loading => loading_function + success,
             :loaded => "$('#{@_tabnav.html[:id]}_content').setStyle({height: 'auto'});"
           }
-          out link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab_html)
+          concat link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab_html)
         else
           raise "WHAT THE HELL?"
         end
-        out "</li>\n"
+        concat "</li>\n"
       end
-      out '</ul>'
+      concat '</ul>'
     end
-
-    def out(string); concat string, @_binding; end
 
     # generate javascript function to use
     # while loading remote tabs
