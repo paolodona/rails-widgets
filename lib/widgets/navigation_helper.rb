@@ -30,7 +30,7 @@ module Widgets
     def render_navigation_items
       return if @_navigation.items.empty?
 
-      out "<ul>\n"
+      concat "<ul>\n"
       @_navigation.items.each_with_index do |item,index|
         if item.disabled?
           item.html[:class] = 'disabled'
