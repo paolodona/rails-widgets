@@ -50,7 +50,7 @@ module Widgets
             h = clean_unwanted_keys(highlight)
             h.each_key do |key|   # for each key
               # remove first slash from <tt>:controller</tt> key otherwise highlighted? could fail with urls such as {:controller => "/base"</tt>
-              h_key = h[key].to_s.dup
+              h_key = h[key].to_param.dup
               h_key.gsub!(/^\//,"") if key == :controller          
               highlighted &= h_key==options[key].to_s
             end
