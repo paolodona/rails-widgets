@@ -40,3 +40,8 @@ ActionController::Base.helper Widgets::ProgressbarHelper
 ##### Spiffy Corners #####
 require 'widgets/spiffy_corners/spiffy_corners_helper'
 ActionController::Base.helper Widgets::SpiffyCorners::SpiffyCornersHelper
+
+##### UtilsHelper #####
+require 'widgets/utils_helper'
+ActionController::Base.helper Widgets::UtilsHelper
+
