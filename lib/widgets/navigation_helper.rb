@@ -42,7 +42,11 @@ module Widgets
         if item.disabled?
           concat content_tag('span', item.name, item.html)
         else
-          concat link_to(item.name, item.link, item.html)
+          if !item.function.blank?
+            concat link_to_function(item.name, item.function, item.html)
+          else
+            concat link_to(item.name, item.link, item.html)
+          end
         end
         concat @_navigation.separator unless index == @_navigation.items.size - 1
         concat "</li>\n"
