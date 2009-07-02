@@ -11,6 +11,7 @@ module Widgets
       @html = opts[:html] || {} 
       @function = opts[:function] || {}
       @html[:title] = opts[:title] 
+      @html[:target] = opts[:target]      
      
       yield(self) if block_given?
       
@@ -23,6 +24,7 @@ module Widgets
     def function_to(f); @function = f; end
     def named(n); @name = n; end
     def titled(t); @html[:title] = t; end 
+    def new_window(n); html[:target] = n ? '_blank' : nil; end    
        
     def link?
       @link && !@link.empty?
