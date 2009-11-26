@@ -1,60 +1,55 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-class TableizeHelperTest < Test::Unit::TestCase
+class TableHelperTest < ActionView::TestCase
+  
+  include Widgets::TableHelper
   
   EXPECTED_INSTANCE_METHODS = %w{tableize}
   
-  def setup
-    @view = ActionView::Base.new
-    @view.extend Widgets::TableHelper
-  end
-  
   def test_presence_of_instance_methods
     EXPECTED_INSTANCE_METHODS.each do |instance_method|
-      assert @view.respond_to?(instance_method), "#{instance_method} is not defined in #{@controller.inspect}" 
+      assert respond_to?(instance_method), "#{instance_method} is not defined in #{@controller.inspect}" 
     end     
   end  
   
   def test_should_fail_if_wrong_args
     assert_raise(ArgumentError) do
-      @view.tableize nil
+      tableize nil
     end
     assert_raise(ArgumentError) do
-      @view.tableize []
+      tableize []
     end
     assert_raise(ArgumentError) do
-      @view.tableize nil, :name => 'main'
+      tableize nil, :name => 'main'
     end
     assert_raise(ArgumentError) do
-      @view.tableize [], :name => 'main'
+      tableize [], :name => 'main'
     end
     assert_raise(ArgumentError) do
-      @view.tableize [], :cols => 1, :name => :the_name do
+      tableize [], :cols => 1, :name => :the_name do
         # nothing
       end
     end
   end  
   
   def test_block_invariance
-    _erbout = ''
     assert_nothing_raised do
-      @view.tableize ['IS', 'Same!', 'Thing?'], :name => :the_name do |i|
-        _erbout.concat i
+      tableize ['IS', 'Same!', 'Thing?'], :name => :the_name do |i|
+        output_buffer.concat i
       end
     end
-    expected, _erbout = _erbout, ''
+    expected = output_buffer
     assert_nothing_raised do
-      @view.tableize(['IS', 'Same!', 'Thing?'], :name => :the_name) { |i| _erbout.concat i }
+      tableize(['IS', 'Same!', 'Thing?'], :name => :the_name) { |i| output_buffer.concat i }
     end
-    assert_dom_equal expected, _erbout, 'Block vs Proc generation differs'
+    assert_dom_equal expected, output_buffer, 'Block vs Proc generation differs'
   end   
   
   def test_empty_layout
-    _erbout = ''
-    @view.tableize [], :cols => 2, :name => :empty_layout do |i|
-      _erbout.concat 'nowhere'
+    tableize [], :cols => 2, :name => :empty_layout do |i|
+      output_buffer.concat 'nowhere'
     end
-    root = HTML::Document.new(_erbout).root
+    root = HTML::Document.new(output_buffer).root
     assert_select root, 'table.empty_layout_table:root', :count => 1 do
       assert_select 'tbody:only-of-type' do
         assert_select 'tr', :count => 1
@@ -64,11 +59,10 @@ class TableizeHelperTest < Test::Unit::TestCase
   end
   
   def test_1_item_layout
-    _erbout = ''
-    @view.tableize [1], :name => '1_item_layout' do |i|
-      _erbout.concat i.to_s
+    tableize [1], :name => '1_item_layout' do |i|
+      output_buffer.concat i.to_s
     end
-    root = HTML::Document.new(_erbout).root
+    root = HTML::Document.new(output_buffer).root
     assert_select root, 'table.1_item_layout_table:root', :count => 1 do
       assert_select 'tbody:only-of-type' do
         assert_select 'tr', :count => 1
@@ -82,11 +76,10 @@ class TableizeHelperTest < Test::Unit::TestCase
   end 
   
   def test_row_less_1_item_layout
-    _erbout = ''
-    @view.tableize %w{1 2 3 4 5}, :cols => 6, :name => 'row_less_1_item_layout' do |i| 
-      _erbout.concat i.to_s
+    tableize %w{1 2 3 4 5}, :cols => 6, :name => 'row_less_1_item_layout' do |i| 
+      output_buffer.concat i.to_s
     end
-    root = HTML::Document.new(_erbout).root
+    root = HTML::Document.new(output_buffer).root
     assert_select root, 'table.row_less_1_item_layout_table:root', :count => 1 do
       assert_select 'tbody:only-of-type' do
         assert_select 'tr', :count => 1
@@ -99,15 +92,15 @@ class TableizeHelperTest < Test::Unit::TestCase
           assert_select 'td.blank:last-of-type', '&nbsp;'
         end
       end   
-  end
+    end
   end  
   
   def test_full_row_layout
-    _erbout = ''
-    @view.tableize %w{1 2 3 4 5}, :cols => 5, :name => :full_row_layout  do |i| 
-      _erbout.concat i.to_s
+    tableize %w{1 2 3 4 5}, :cols => 5, :name => :full_row_layout  do |i| 
+      output_buffer.concat i.to_s
     end
-    root = HTML::Document.new(_erbout).root
+    puts output_buffer
+    root = HTML::Document.new(output_buffer).root
     assert_select root, 'table.full_row_layout_table:root', :count => 1 do
       assert_select 'tbody:only-of-type' do
         assert_select 'tr', :count => 1
@@ -123,11 +116,10 @@ class TableizeHelperTest < Test::Unit::TestCase
   end  
   
   def test_row_plus_1_item_layout
-    _erbout = ''
-    @view.tableize %w{1 2 3 4 5}, :cols => 4, :name=> 'row_plus_1_item_layout' do |i| 
-      _erbout.concat i.to_s
+    tableize %w{1 2 3 4 5}, :cols => 4, :name=> 'row_plus_1_item_layout' do |i| 
+      output_buffer.concat i.to_s
     end
-    root = HTML::Document.new(_erbout).root
+    root = HTML::Document.new(output_buffer).root
     assert_select root, 'table.row_plus_1_item_layout_table:root', :count => 1 do
       assert_select 'tbody:only-of-type' do
         assert_select 'tr', :count => 2
@@ -148,17 +140,16 @@ class TableizeHelperTest < Test::Unit::TestCase
   end  
   
   def test_options
-    _erbout = ''
-    @view.tableize nil,
-    :name => :options, 
-    :collection => %w{1 2 3 4 5}, 
-    :generate_css => true,
-    :header => 'TiTlE',
-    :html => {:id => 'number', :class => 'demo'},
-    :cols => 4 do |i| 
-      _erbout.concat i.to_s
+    tableize nil,
+             :name => :options, 
+             :collection => %w{1 2 3 4 5}, 
+             :generate_css => true,
+             :header => 'TiTlE',
+             :html => {:id => 'number', :class => 'demo'},
+             :cols => 4 do |i| 
+      output_buffer.concat i.to_s
     end
-    root = HTML::Document.new(_erbout).root
+    root = HTML::Document.new(output_buffer).root
     assert_select root, 'style:root', :count => 1
     assert_select root, 'table[class=demo][id=number]:root', :count => 1 do
       assert_select 'tbody:only-of-type' do
