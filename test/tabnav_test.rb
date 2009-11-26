@@ -1,10 +1,7 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-class TabnavTest < Test::Unit::TestCase
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::TextHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::CaptureHelper
+class TabnavTest < ActionView::TestCase
+
   include Widgets::TabnavHelper
   attr_accessor :params
 
@@ -19,7 +16,6 @@ class TabnavTest < Test::Unit::TestCase
   end
 
   def test_multiple_css_class
-    _erbout = ''
     render_tabnav :main do
       add_tab :html=>{:class=>'home'} do |t|
         t.named 'active-tab'
@@ -38,7 +34,7 @@ class TabnavTest < Test::Unit::TestCase
       end
     end
 
-    root = HTML::Document.new(_erbout).root
+    root = HTML::Document.new(output_buffer).root
     assert_select root, 'div[class=main_tabnav][id=main_tabnav]:root', :count => 1 do
       assert_select 'ul:only-of-type li', :count => 4 do
         assert_select 'li[class=home active]:first-of-type' do
