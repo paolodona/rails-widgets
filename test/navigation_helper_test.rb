@@ -1,15 +1,10 @@
 require File.dirname(__FILE__) + '/test_helper'
 
-class NavigationHelperTest < Test::Unit::TestCase
-  attr_accessor :params, :output_buffer
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::TextHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::CaptureHelper
+class NavigationHelperTest < ActionView::TestCase
+  attr_accessor :params
   include Widgets::NavigationHelper
   
   def setup
-    @output_buffer = ''
     @params = {}
   end
     

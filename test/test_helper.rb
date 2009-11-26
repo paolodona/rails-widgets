@@ -6,6 +6,7 @@ require 'test/unit'
 require 'active_record'
 require 'action_controller'
 require 'action_controller/test_process'
+require 'action_view/test_case'
 require 'init'
 
 # gem install redgreen for colored test output
