@@ -76,16 +76,14 @@ module Widgets
           index += 1
           _out << content_tag('td', capture(item, &@block))
 
-          _out << '</tr>' << tag('tr', nil, true) if ( index.remainder(@columns) == 0 and index != size )
-
-          # should_wrap =  index.remainder(@columns) == 0 and index != size
-          # _out << '</tr>' << tag('tr', nil, true) if should_wrap 
+          should_wrap = ( index.remainder(@columns) == 0 and index != size )
+          _out << '</tr>' << tag('tr', nil, true) if should_wrap 
 
           # prepend every line with an empty cell
-          # if should_wrap && opts[:skip_header_column] == true
-          #   _out << empty_cell 
-          #   index += 1; size += 1
-          # end
+          if should_wrap && @opts[:skip_header_column] == true
+            _out << empty_cell 
+            index += 1; size += 1
+          end
         end
         # fill remaining columns with empty boxes
         remaining = size.remainder(@columns)

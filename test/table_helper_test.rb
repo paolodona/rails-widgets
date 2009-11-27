@@ -136,7 +136,48 @@ class TableHelperTest < ActionView::TestCase
         end
       end
     end
-  end  
+  end
+  
+  def test_row_with_header_title
+    tableize %w{1 2 3}, :cols => 4, :header => 'I am a title', :name=> 'row_with_header_title' do |i| 
+      output_buffer.concat i.to_s
+    end
+    root = HTML::Document.new(output_buffer).root
+    assert_select root, 'table.row_with_header_title_table:root', :count => 1 do
+      assert_select 'tbody:only-of-type' do
+        assert_select 'tr', :count => 1
+        assert_select 'th:first-child', 'I am a title'
+        assert_select 'th:only-of-type', 'I am a title'
+        
+        assert_select 'tr > td', 3
+        assert_select 'td:first-of-type', '1'
+        assert_select 'td:nth-of-type(2)', '2'
+        assert_select 'td:last-of-type', '3'
+      end
+    end
+  end
+  
+  def test_multiple_rows_skip_header_column
+    tableize %w{1 2 3 4 5}, :cols => 3, :skip_header_column => true do |i| 
+      output_buffer.concat i.to_s
+    end
+    root = HTML::Document.new(output_buffer).root
+    assert_select root, 'table:root', :count => 1 do
+      assert_select 'tbody:only-of-type' do
+        assert_select 'tr', :count => 2
+        assert_select 'tr:first-of-type td', :count => 3 do
+          assert_select 'td:first-of-type', '1'
+          assert_select 'td:nth-of-type(2)', '2'
+          assert_select 'td:last-of-type', '3'
+        end
+        assert_select 'tr:last-of-type td', :count => 3 do
+          assert_select 'td.blank:first-of-type', '&nbsp;'
+          assert_select 'td:nth-of-type(2)', '4'
+          assert_select 'td:last-of-type', '5'
+        end
+      end
+    end
+  end
   
   def test_options
     tableize nil,
