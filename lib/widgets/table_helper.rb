@@ -38,7 +38,16 @@ module Widgets
         raise ArgumentError, 'Missing block in tableize call' unless block_given?
         raise ArgumentError, 'Tableize columns must be two or more' unless @columns > 1
         
+        @generate_css = opts[:generate_css] || false
+        
         @opts = opts
+        
+        @name = opts[:name] || :main
+        @html = opts[:html] || {} # setup default html options
+        @html[:id] ||= @name.to_s.underscore << '_table'
+        @html[:class] ||= @html[:id]
+        @header = opts[:header]
+        
         @template = template
         @block = block
       end
@@ -48,17 +57,8 @@ module Widgets
       end
       
       def render
-        @collection ||= @opts[:collection]
-        
-
-        @generate_css = @opts[:generate_css] || false
-        name = @opts[:name] || :main
-        html = @opts[:html] || {} # setup default html options
-        html[:id] ||= name.to_s.underscore << '_table'
-        html[:class] ||= html[:id]
-
         _out = @generate_css ? render_css('table') : ''
-        _out << tag('table', {:id => html[:id], :class => html[:class]}, true) 
+        _out << tag('table', {:id => @html[:id], :class => @html[:class]}, true) 
         _out << tag('tbody', nil, true) 
         _out << tag('tr', nil, true)
 
@@ -66,8 +66,8 @@ module Widgets
         size = @collection.size
         empty_cell = content_tag('td', '&nbsp;', :class => 'blank')
         # add header
-        if (@opts[:header]) 
-          _out << content_tag('th', @opts[:header])
+        if (@header) 
+          _out << content_tag('th', @header)
           index += 1
           size += 1
         end
