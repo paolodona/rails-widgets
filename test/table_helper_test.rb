@@ -99,7 +99,6 @@ class TableHelperTest < ActionView::TestCase
     tableize %w{1 2 3 4 5}, :cols => 5, :name => :full_row_layout  do |i| 
       output_buffer.concat i.to_s
     end
-    puts output_buffer
     root = HTML::Document.new(output_buffer).root
     assert_select root, 'table.full_row_layout_table:root', :count => 1 do
       assert_select 'tbody:only-of-type' do
