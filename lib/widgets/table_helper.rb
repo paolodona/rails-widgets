@@ -35,7 +35,7 @@ module Widgets
         raise ArgumentError, 'Missing block in tableize call' unless block_given?
         raise ArgumentError, 'Tableize columns must be two or more' unless columns >= 2
         
-        @output_buffer = ''
+        @buffer = ''
       end
       
       def render
@@ -63,7 +63,7 @@ module Widgets
       end
       
       def generate_css
-        @output_buffer << render_css('table') if generate_css?
+        @buffer << render_css('table') if generate_css?
       end
       
       def generate_html
@@ -73,16 +73,16 @@ module Widgets
       end
       
       def flush_to_template
-        concat(@output_buffer)
+        concat(@buffer)
       end
       
       def opening_table_tags
-        @output_buffer << tag('table', {:id => table_id, :class => table_class}, true) 
-        @output_buffer << tag('tbody', nil, true)
+        @buffer << tag('table', {:id => table_id, :class => table_class}, true) 
+        @buffer << tag('tbody', nil, true)
       end
       
       def closing_table_tags
-        @output_buffer << '</tbody>' << '</table>'
+        @buffer << '</tbody>' << '</table>'
       end
       
       def table_rows
@@ -96,16 +96,16 @@ module Widgets
       end
       
       def opening_tr_tag
-        @output_buffer << tag('tr', nil, true)
+        @buffer << tag('tr', nil, true)
       end
       
       def closing_tr_tag
-        @output_buffer << '</tr>'
+        @buffer << '</tr>'
       end
 
       def header_tag
         if header
-          @output_buffer << content_tag('th', header)
+          @buffer << content_tag('th', header)
           allow_for_extra_item
         end
       end
@@ -129,7 +129,7 @@ module Widgets
       end
       
       def generate_cell(item)
-        @output_buffer << content_tag('td', capture(item, &@block))
+        @buffer << content_tag('td', capture(item, &@block))
       end
       
       def wrap_to_new_row_if_required
@@ -154,7 +154,7 @@ module Widgets
       
       def skip_header_column
         if skip_header_column?
-          @output_buffer << empty_cell 
+          @buffer << empty_cell 
           allow_for_extra_item
         end
       end
@@ -169,7 +169,7 @@ module Widgets
         
         unless remainder == 0
           cells_to_pad.times do
-            @output_buffer << empty_cell
+            @buffer << empty_cell
           end 
         end
       end
