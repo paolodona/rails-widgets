@@ -12,25 +12,27 @@ class TableHelperTest < ActionView::TestCase
     end     
   end  
   
-  def test_should_fail_if_wrong_args
-    assert_raise(ArgumentError) do
-      tableize nil
+  def test_should_raise_argument_error_when_no_block_supplied
+    assert_raise(ArgumentError, "Missing block in tableize call") do 
+      tableize [], :cols => 3
     end
-    assert_raise(ArgumentError) do
-      tableize []
+  end
+  
+  def test_should_raise_argument_error_when_less_than_2_columns_specified
+    assert_raise(ArgumentError, "Tableize columns must be two or more") do 
+      tableize [], :cols => 1 do; end;
     end
-    assert_raise(ArgumentError) do
-      tableize nil, :name => 'main'
+  end
+  
+  def test_should_raise_argument_error_when_collection_not_supplied
+    assert_raise(ArgumentError, "Missing collection parameter in tableize call") do 
+      tableize nil, {} do; end;
     end
-    assert_raise(ArgumentError) do
-      tableize [], :name => 'main'
+    
+    assert_raise(ArgumentError, "Missing collection parameter in tableize call") do 
+      tableize nil, {:collection => nil} do; end;
     end
-    assert_raise(ArgumentError) do
-      tableize [], :cols => 1, :name => :the_name do
-        # nothing
-      end
-    end
-  end  
+  end
   
   def test_block_invariance
     assert_nothing_raised do
