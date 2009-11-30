@@ -33,14 +33,16 @@ module Widgets
         
         raise ArgumentError, 'Missing collection parameter in tableize call' unless @collection
         raise ArgumentError, 'Missing block in tableize call' unless block_given?
-        raise ArgumentError, 'Tableize columns must be two or more' unless @columns >= 2
+        raise ArgumentError, 'Tableize columns must be two or more' unless columns >= 2
+        
+        @output_buffer = ''
       end
       
       def render
         generate_css
         generate_html
-        concat(@output_buffer)
-        nil # avoid duplication if called with <%= %>
+        flush_to_template
+        return nil # avoid duplication if called with <%= %>
       end
       
       protected
@@ -49,21 +51,15 @@ module Widgets
         @collection = collection
         @collection ||= opts[:collection]
         
-        @columns = opts[:cols] || 3
+        @opts = opts
         
-        @generate_css = opts[:generate_css] || false
-        
-        @name = opts[:name] || :main
-        @html = opts[:html] || {} # setup default html options
-        @html[:id] ||= @name.to_s.underscore << '_table'
+        name = opts[:name] || :main
+        @html = opts[:html] || {}
+        @html[:id] ||= name.to_s.underscore << '_table'
         @html[:class] ||= @html[:id]
-        @header = opts[:header]
-        @skip_header_column = opts[:skip_header_column]
         
         @template = template
         @block = block
-        
-        @output_buffer = ''
       end
       
       def generate_css
@@ -71,43 +67,131 @@ module Widgets
       end
       
       def generate_html
-        @output_buffer << tag('table', {:id => @html[:id], :class => @html[:class]}, true) 
-        @output_buffer << tag('tbody', nil, true) 
-        @output_buffer << tag('tr', nil, true)
-
-        index = 0
-        size = @collection.size
-        empty_cell = content_tag('td', '&nbsp;', :class => 'blank')
-        # add header
-        if (@header) 
-          @output_buffer << content_tag('th', @header)
-          index += 1
-          size += 1
-        end
-        # fill line with items, breaking if needed
-        @collection.each do |item|
-          index += 1
-          @output_buffer << content_tag('td', capture(item, &@block))
-
-          should_wrap = ( index.remainder(@columns) == 0 and index != size )
-          @output_buffer << '</tr>' << tag('tr', nil, true) if should_wrap 
-
-          # prepend every line with an empty cell
-          if should_wrap && @skip_header_column == true
-            @output_buffer << empty_cell 
-            index += 1; size += 1
-          end
-        end
-        # fill remaining columns with empty boxes
-        remaining = size.remainder(@columns)
-         (@columns - remaining).times do
-          @output_buffer << empty_cell
-        end unless remaining == 0
-        @output_buffer << '</tr>' << '</tbody>' << '</table>'
+        opening_table_tags
+        table_rows
+        closing_table_tags
       end
       
+      def flush_to_template
+        concat(@output_buffer)
+      end
+      
+      def opening_table_tags
+        @output_buffer << tag('table', {:id => table_id, :class => table_class}, true) 
+        @output_buffer << tag('tbody', nil, true)
+      end
+      
+      def closing_table_tags
+        @output_buffer << '</tbody>' << '</table>'
+      end
+      
+      def table_rows
+        @index = 0
+        @size = @collection.size
+        
+        opening_tr_tag
+        header_tag
+        fill_table_cells
+        closing_tr_tag
+      end
+      
+      def opening_tr_tag
+        @output_buffer << tag('tr', nil, true)
+      end
+      
+      def closing_tr_tag
+        @output_buffer << '</tr>'
+      end
+
+      def header_tag
+        if header
+          @output_buffer << content_tag('th', header)
+          allow_for_extra_item
+        end
+      end
+      
+      def allow_for_extra_item
+        @index += 1
+        @size += 1
+      end
+      
+      def fill_table_cells
+        @collection.each do |item|
+          @index += 1
+          generate_cell(item)
+          wrap_to_new_row_if_required
+        end
+        pad_last_row
+      end
+      
+      def empty_cell
+        content_tag('td', '&nbsp;', :class => 'blank')
+      end
+      
+      def generate_cell(item)
+        @output_buffer << content_tag('td', capture(item, &@block))
+      end
+      
+      def wrap_to_new_row_if_required
+        if wrap_to_new_row?
+          closing_tr_tag
+          opening_tr_tag
+          skip_header_column
+        end
+      end
+      
+      def wrap_to_new_row?
+        end_of_current_line? and !final_element?
+      end
+      
+      def end_of_current_line?
+        @index.remainder(columns) == 0
+      end
+      
+      def final_element?
+        @index == @size
+      end
+      
+      def skip_header_column
+        if skip_header_column?
+          @output_buffer << empty_cell 
+          allow_for_extra_item
+        end
+      end
+      
+      def skip_header_column?
+        @opts[:skip_header_column] == true
+      end
+      
+      def pad_last_row
+        remainder = @size.remainder(columns)
+        cells_to_pad = columns - remainder
+        
+        unless remainder == 0
+          cells_to_pad.times do
+            @output_buffer << empty_cell
+          end 
+        end
+      end
+
       def generate_css?
-        @generate_css
+        @opts[:generate_css] || false
+      end
+      
+      def columns
+        @opts[:cols] || 3
+      end
+      
+      def header
+        @opts[:header]
+      end
+      
+      def table_id
+        @html[:id]
+      end
+      
+      def table_class
+        @html[:class]
       end
       
       def method_missing(*args, &block)
