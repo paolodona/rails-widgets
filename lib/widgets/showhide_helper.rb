@@ -84,7 +84,7 @@ module Widgets
     #
     # Taken from ActionView::Helpers::RecordTagHelper
     def content_box_for(tag_name, *args, &block)
-      concat content_tag(tag_name, capture(&block), args), block.binding
+      concat content_tag(tag_name, capture(&block), args)
     end
   end
 end
