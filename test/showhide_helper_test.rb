@@ -16,13 +16,8 @@ class Post < ActiveRecord::Base
   end
 end
 
-class Widgets::ShowhideHelperTest < Test::Unit::TestCase
+class Widgets::ShowhideHelperTest < ActionView::TestCase
   attr_accessor :output_buffer
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::TextHelper
-  include ActionView::Helpers::UrlHelper
-  include ActionView::Helpers::CaptureHelper
-  include ActionView::Helpers::RecordIdentificationHelper
   include Widgets::ShowhideHelper
   
   def setup
