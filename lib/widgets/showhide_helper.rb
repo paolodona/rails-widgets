@@ -6,6 +6,7 @@ module Widgets
       name = opts[:name] || 'details'
       link_name = opts[:link_name] || 'show details'
       detail_box_id = opts[:detail_box_id] || dom_detail_id(record,name)
+      hide_link_id = opts[:hide_link_id] || dom_hide_id(record,name)
 
       html = opts[:html] || {} # setup default html options
       html[:id] ||= dom_show_id(record,name)
@@ -14,6 +15,7 @@ module Widgets
       link_to_function link_name, nil, html do |page|
         page[detail_box_id].show
         page[html[:id]].hide
+        page[hide_link_id].show
       end
     end
 
@@ -26,10 +28,13 @@ module Widgets
       html = opts[:html] || {} # setup default html options
       html[:id] ||= dom_hide_id(record,name)
       html[:class] ||= "#{name}_hide_link"
+      html[:style] ||= ""
+      html[:style] += "display:none;"
 
       link_to_function link_name, nil, html do |page|
         page[detail_box_id].hide
         page[show_link_id].show
+        page[html[:id]].hide
       end
     end
 
