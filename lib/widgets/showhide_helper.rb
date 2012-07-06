@@ -51,6 +51,16 @@ module Widgets
       concat(render_css('showhide')) if generate_css?
       # Taken from ActionView::Helpers::RecordTagHelper
       concat content_tag(:div, capture(&block), html)
+      
+      if opts[:start_open]
+        function = update_page do |page|
+          page[dom_detail_id(record,name)].show
+          page[dom_show_id(record,name)].hide
+          page[dom_hide_id(record,name)].show
+        end
+        concat content_tag(:script, function)
+      end
+     
       nil
     end
 
