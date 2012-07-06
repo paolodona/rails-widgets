@@ -12,7 +12,7 @@ module Widgets
         @_spiffy_corners_content = capture(&block) 
         html << rw_render_template('spiffy_corners/spiffy5', binding)
        
-        concat html.join
+        concat html.join.html_safe
         return nil
       end
     end

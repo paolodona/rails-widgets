@@ -49,6 +49,7 @@ module Widgets
           elsif highlight.kind_of? Hash # evaluate the hash
             h = clean_unwanted_keys(highlight)
             h.each_key do |key|   # for each key
+              next if h[key].nil?
               # remove first slash from <tt>:controller</tt> key otherwise highlighted? could fail with urls such as {:controller => "/base"</tt>
               h_key = h[key].to_param.dup
               h_key.gsub!(/^\//,"") if key == :controller          

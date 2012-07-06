@@ -23,10 +23,10 @@ module Widgets
         html << tag('div', options, true)
         html << capture(&block)
         html << '</div>'
-        concat html
+        safe_concat html
         nil # avoid duplication if called with <%= %>
       else
-        return html
+        return html.html_safe
       end
     end
 
@@ -41,11 +41,11 @@ module Widgets
       @_tabnav = Tabnav.new(name, opts)
 
       instance_eval(&proc)
-      concat @_tabnav.render_css('tabnav') if @_tabnav.generate_css?
-      concat tag('div',@_tabnav.html ,true)
+      safe_concat @_tabnav.render_css('tabnav') if @_tabnav.generate_css?
+      safe_concat tag('div',@_tabnav.html ,true)
       @_tabnav.sort! if opts[:sort] == true
       render_tabnav_tabs
-      concat "</div>\n"
+      safe_concat "</div>\n"
       nil
     end
 
@@ -85,9 +85,9 @@ module Widgets
 
         concat tag('li', li_options, true)
         if tab.disabled? || (tab.link.empty? && tab.remote_link.nil?)
-          concat content_tag('span', tab.name, tab_html)
+          safe_concat content_tag('span', tab.name, tab_html)
         elsif !tab.link.empty?
-          concat link_to(tab.name, tab.link, tab_html)
+          safe_concat link_to(tab.name, tab.link, tab_html)
         elsif tab.remote_link
           success = "document.getElementsByClassName('active', $('" + @_tabnav.html[:id]+ "')).each(function(item){item.removeClassName('active');});"
           success += "$('#{tab.html[:id]}').addClassName('active');"
@@ -99,13 +99,13 @@ module Widgets
             :loading => loading_function + success,
             :loaded => "$('#{@_tabnav.html[:id]}_content').setStyle({height: 'auto'});"
           }
-          concat link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab_html)
+          safe_concat link_to_remote(tab.name, remote_opts.merge(tab.remote_link), tab_html)
         else
           raise "WHAT THE HELL?"
         end
-        concat "</li>\n"
+        safe_concat "</li>\n"
       end
-      concat '</ul>'
+      safe_concat '</ul>'
     end
 
     # generate javascript function to use

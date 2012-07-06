@@ -7,7 +7,7 @@ module Widgets
     # converts blank spaces into no breaking spaces
     # use it like <%=nbsp ...%>
     def nbsp(string)
-      string.to_s.gsub " ", "&nbsp;"
+      h(string).to_s.gsub(" ", "&nbsp;").html_safe
     end 
   
     # generates random text to fill up not-yet-implemented interfaces

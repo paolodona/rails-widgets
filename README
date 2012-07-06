@@ -1,19 +1,19 @@
-Rails Widgets
+Rails Widgets for Rails 3
 =======
+
+This is a version of paolodonas rails-widgets that works with Rails 3
+
+Right now only tabnav, tooltip and navigation work
 
 Rails Widgets is a collection of UI Widgets for RubyOnRails (in form of ActionView helpers).
 You can add tabbed navigations, progressbars, rounded boxes etc in a snap.
 All the widgets generate and inline their own CSS. Once your page is up and running you can extract and customize them as you wish.
 
-Source code:
-  git://github.com/paolodona/rails-widgets.git
+Source code for this fork:
+  git://github.com/nasmorn/rails-widgets.git
 
-Documentation: 
+Documentation still good at paolodonas: 
   http://github.com/paolodona/rails-widgets/wikis
-
-Discussion Groups:
-  http://groups.google.com/group/railswidgets
-  http://groups.google.com/group/rails-widgets-dev
 
 Issue Tracking:
   http://rails-widgets.lighthouseapp.com

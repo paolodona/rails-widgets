@@ -51,7 +51,6 @@ module Widgets
       concat(render_css('showhide')) if generate_css?
       # Taken from ActionView::Helpers::RecordTagHelper
       concat content_tag(:div, capture(&block), html)
-      
       if opts[:start_open]
         function = update_page do |page|
           page[dom_detail_id(record,name)].show
@@ -60,7 +59,7 @@ module Widgets
         end
         concat content_tag(:script, function)
       end
-     
+
       nil
     end
 
@@ -88,7 +87,7 @@ module Widgets
 
     def normalize_class_name object
       if object.kind_of?(ActiveRecord::Base)
-        ActionController::RecordIdentifier.singular_class_name(object)
+        ActionController::RecordIdentifier.dom_class(object)
       else
         object.to_s
       end
